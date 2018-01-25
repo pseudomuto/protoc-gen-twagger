@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package com.pseudomuto.todo.v1;
+option go_package = "fixtures";
+
+import "google/api/annotations.proto";
+
+// A service for managing "todo" items
+//
+// Add, complete, and remove your items on your todo lists
+service Todo {
+  // Create a new todo list
+  rpc CreateList(CreateListRequest) returns (CreateListResponse) {
+    option (google.api.http) = {
+      post: "/twirp/com.pseudomuto.todo.v1.Todo/CreateList"
+      body: "*"
+    };
+  }
+
+  // Add an item to your list
+  //
+  // Adds a new item to the specified list.
+  rpc AddItem(AddItemRequest) returns (AddItemResponse) {
+    option (google.api.http) = {
+      post: "/twirp/com.pseudomuto.todo.v1.Todo/AddItem"
+      body: "*"
+    };
+  }
+}
+
+message List {
+  int64 id    = 1; // the id of the list
+  string name = 2;
+}
+
+message CreateListRequest {
+  string name = 1;
+}
+
+message CreateListResponse {
+  List list = 1;
+}
+
+message Item {
+  int64 id       = 1;
+  string title   = 2;
+  bool completed = 3;
+}
+
+message AddItemRequest {
+  int64 list_id  = 1;
+  string title   = 2;
+  bool completed = 3;
+}
+
+message AddItemResponse {
+  Item item = 1;
+}

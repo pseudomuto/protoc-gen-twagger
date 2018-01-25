@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package com.pseudomuto.protoc_gen_twagger.options;
+option go_package = "options";
+
+message OpenAPI {
+  reserved 3; // reserved for security
+  reserved 6; // reserved for paths
+  reserved 7; // reserved for components
+
+  string openapi                      = 1; // REQUIRED. This string MUST be the semantic version of the OpenAPI Specification.
+  Info info                           = 2; // REQUIRED. Provides metadata about the API.
+  repeated Server servers             = 4; // An array of server objects.
+  repeated Tag tags                   = 5; // A list of tags used by the specification with additional metadata.
+
+  ExternalDocumentation external_docs = 8; // Additional external documentation.
+}
+
+message Info {
+  string title            = 1; // REQUIRED. The title of the application.
+  string description      = 2; // A short description of the application.
+  string terms_of_service = 3; // A URL to the Terms of Service for the API.
+  Contact contact         = 4; // The contact information for the exposed API.
+  License license         = 5; // The license information for the exposed API.
+  string version          = 6; // REQUIRED. The version of the OpenAPI document.
+}
+
+message Contact {
+  string name  = 1; // The identifying name of the contact person/organization.
+  string url   = 2; // The URL pointing to the contact information.
+  string email = 3; // email address of the contact person/organization.
+}
+
+message License {
+  string name  = 1; // REQUIRED. The license name used for the API.
+  string url   = 2; // A URL to the license used for the API.
+}
+
+message Server {
+  string url                            = 1; // REQUIRED. A URL to the target host.
+  string description                    = 2; // An optional string describing the host designated by the URL.
+  map<string, ServerVariable> variables = 3; // A map between a variable name and its value.
+}
+
+message ServerVariable {
+  repeated string enum = 1; // An enumeration of string values to be used if the options are from a limited set.
+  string default       = 2; // REQUIRED. The default value to use for substitution.
+  string description   = 3; // An optional description for the server variable.
+}
+
+message Tag {
+  string name                         = 1; // REQUIRED. The name of the tag.
+  string description                  = 2; // A short description for the tag.
+  ExternalDocumentation external_docs = 3; // Additional external documentation for this tag.
+}
+
+message ExternalDocumentation {
+  string url         = 1; // REQUIRED. The URL for the target documentation.
+  string description = 2; // A short description of the target documentation.
+}

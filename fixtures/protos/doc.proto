@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+import "options/annotations.proto";
+
+// # The official documentation for the Todo API.
+//
+// In _certain_ cases, this is really the best API you can have.
+//
+// **If you want to run the examples here, you'll need to**:
+//
+// * `make setup`
+// * `make test`
+// * `make run`
+//
+// This is is an ongoing project, so if something's missing...patches welcome :)
+package com.pseudomuto.todo.v1;
+
+option (com.pseudomuto.protoc_gen_twagger.options.api) = {
+	openapi: "3.0";
+	info: {
+		title: "Todo API"
+		version: "0.1.0"
+		contact: {
+			name: "Todo Team"
+			email: "team@todo.com"
+		};
+		license: {
+			name: "Apache 2.0"
+			url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+		};
+	};
+	servers: {
+	  url: "http://localhost:8000"
+		description: "The local development server."
+	};
+};

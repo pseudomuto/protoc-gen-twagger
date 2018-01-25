@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package com.pseudomuto.protoc_gen_twagger.options;
+option go_package = "options";
+
+import "swagger.proto";
+import "google/protobuf/descriptor.proto";
+
+extend google.protobuf.FileOptions {
+  // Chose an arbitrary number in (50000, 99999).
+  //
+  // This range is reserved for internal use within individual organizations, so you can use numbers in this range
+  // freely for in-house applications
+  OpenAPI api = 81098;
+}
