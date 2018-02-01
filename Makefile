@@ -1,4 +1,4 @@
-.PHONY: setup test run
+.PHONY: setup test run swagger
 
 TEST_DEPS = fixtures/codegen.req options/annotations.pb.go options/swagger.pb.go
 
@@ -22,7 +22,6 @@ run: build
 		-I. -I./options \
 		-I./vendor/github.com/googleapis/googleapis \
 		--proto_path=./fixtures/protos --twagger_out=./_output ./fixtures/protos/*.proto
-	@cat _output/swagger.json
 
 fixtures/codegen.req: fixtures/protos/*.proto
 	@echo Generating fixtures...
@@ -35,3 +34,8 @@ options/annotations.pb.go options/swagger.pb.go: options/*.proto
 test: $(TEST_DEPS)
 	@echo Running tests...
 	@go test -race -cover ./internal/...
+
+swagger: $(TEST_DEPS) run
+	@docker build -t twagger-test -f Dockerfile.test .
+	@echo running Swagger UI at http://localhost:8080
+	docker run --rm -it -p 8080:8080 twagger-test

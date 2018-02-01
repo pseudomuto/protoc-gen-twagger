@@ -1,0 +1,4 @@
+FROM swaggerapi/swagger-ui:v3.9.1
+ENV API_URL=http://localhost:8080/swagger.json
+
+COPY _output/swagger.json /usr/share/nginx/html/
