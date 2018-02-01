@@ -1,17 +1,17 @@
-package internal_test
+package parser_test
 
 import (
 	"github.com/stretchr/testify/suite"
 
 	"testing"
 
-	"github.com/pseudomuto/protoc-gen-twagger/internal"
+	"github.com/pseudomuto/protoc-gen-twagger/internal/parser"
 	"github.com/pseudomuto/protoc-gen-twagger/internal/utils"
 )
 
 type CommentsTest struct {
 	suite.Suite
-	comments internal.Comments
+	comments parser.Comments
 }
 
 func TestComments(t *testing.T) {
@@ -25,7 +25,7 @@ func (assert *CommentsTest) SetupSuite() {
 	pf := utils.FindFileDescriptor("todo.proto", req.GetProtoFile())
 	assert.NotNil(pf)
 
-	assert.comments = internal.ParseComments(pf)
+	assert.comments = parser.ParseComments(pf)
 }
 
 func (assert *CommentsTest) TestComments() {

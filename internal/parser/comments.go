@@ -1,7 +1,7 @@
-package internal
+package parser
 
 import (
-	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 
 	"strconv"
 	"strings"

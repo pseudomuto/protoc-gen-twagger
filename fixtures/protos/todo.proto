@@ -5,9 +5,9 @@ option go_package = "fixtures";
 
 import "google/api/annotations.proto";
 
-// A service for managing "todo" items
+// A service for managing "todo" items.
 //
-// Add, complete, and remove your items on your todo lists
+// Add, complete, and remove your items on your todo lists.
 service Todo {
   // Create a new todo list
   rpc CreateList(CreateListRequest) returns (CreateListResponse) {
@@ -47,10 +47,11 @@ message Item {
   bool completed = 3;
 }
 
+// A request message for adding new items
 message AddItemRequest {
-  int64 list_id  = 1;
-  string title   = 2;
-  bool completed = 3;
+  int64 list_id  = 1; // The id of the list to add to
+  string title   = 2; // The title of the item
+  bool completed = 3; // Whether or not the item is completed
 }
 
 message AddItemResponse {
