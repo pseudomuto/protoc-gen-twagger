@@ -22,7 +22,12 @@ const (
 func ParseFile(fd *descriptor.FileDescriptorProto) *File {
 	comments := ParseComments(fd)
 
-	file := &File{FileDescriptorProto: fd, Description: comments[fmt.Sprintf("%d", packageCommentPath)]}
+	file := &File{
+		FileDescriptorProto: fd,
+		Description:         comments[fmt.Sprintf("%d", packageCommentPath)],
+		Props:               make(Properties),
+	}
+
 	file.Messages = parseMessages(fd.GetMessageType(), comments)
 	file.Services = parseServices(fd.GetService(), file.GetPackage(), comments)
 
@@ -39,6 +44,7 @@ func parseMessages(protos []*descriptor.DescriptorProto, comments Comments) []*M
 			DescriptorProto: md,
 			Description:     comments[commentPath],
 			Fields:          parseMessageFields(md.GetField(), comments, commentPath),
+			Props:           make(Properties),
 		}
 	}
 
@@ -52,6 +58,7 @@ func parseMessageFields(protos []*descriptor.FieldDescriptorProto, comments Comm
 		fields[i] = &MessageField{
 			FieldDescriptorProto: fd,
 			Description:          comments[fmt.Sprintf("%s.%d.%d", commentPrefix, messageFieldCommentPath, i)],
+			Props:                make(Properties),
 		}
 	}
 
@@ -68,6 +75,7 @@ func parseServices(protos []*descriptor.ServiceDescriptorProto, pkg string, comm
 			ServiceDescriptorProto: sd,
 			Description:            comments[commentPath],
 			Methods:                parseServiceMethods(sd.GetMethod(), sd.GetName(), pkg, comments, commentPath),
+			Props:                  make(Properties),
 		}
 	}
 
@@ -82,6 +90,7 @@ func parseServiceMethods(protos []*descriptor.MethodDescriptorProto, svc, pkg st
 			MethodDescriptorProto: md,
 			Description:           comments[fmt.Sprintf("%s.%d.%d", commentPrefix, serviceMethodCommentPath, i)],
 			Url:                   fmt.Sprintf("/twirp/%s.%s/%s", pkg, svc, md.GetName()),
+			Props:                 make(Properties),
 		}
 	}
 
