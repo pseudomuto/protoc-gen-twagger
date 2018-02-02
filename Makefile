@@ -19,8 +19,9 @@ run: build
 	@retool do protoc \
 		--plugin=protoc-gen-twagger=./protoc-gen-twagger \
 		-I. -I./options \
-		-I./vendor/github.com/googleapis/googleapis \
-		--proto_path=./fixtures/protos --twagger_out=./_output ./fixtures/protos/*.proto
+		-I=./fixtures/protos \
+		--twagger_out=./_output \
+		./fixtures/protos/doc.proto ./fixtures/protos/greeter/service.proto ./fixtures/protos/todo/service.proto
 
 fixtures/codegen.req: fixtures/protos/*.proto
 	@echo Generating fixtures...

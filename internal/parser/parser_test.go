@@ -32,7 +32,7 @@ func (assert *ParserTest) TestParseFile() {
 }
 
 func (assert *ParserTest) TestParseFileServices() {
-	proto := utils.FindFileDescriptor("todo.proto", req.GetProtoFile())
+	proto := utils.FindFileDescriptor("todo/service.proto", req.GetProtoFile())
 	assert.NotNil(proto)
 
 	file := parser.ParseFile(proto)
@@ -52,7 +52,7 @@ func (assert *ParserTest) TestParseFileServices() {
 }
 
 func (assert *ParserTest) TestParseFileMessages() {
-	proto := utils.FindFileDescriptor("todo.proto", req.GetProtoFile())
+	proto := utils.FindFileDescriptor("todo/service.proto", req.GetProtoFile())
 	assert.NotNil(proto)
 
 	file := parser.ParseFile(proto)

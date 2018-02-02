@@ -13,7 +13,7 @@ import "options/annotations.proto";
 // * `make run`
 //
 // This is is an ongoing project, so if something's missing...patches welcome :)
-package com.pseudomuto.todo.v1;
+package com.pseudomuto.fixtures.v1;
 
 option (com.pseudomuto.protoc_gen_twagger.options.api) = {
 	openapi: "3.0";

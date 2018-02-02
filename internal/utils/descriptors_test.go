@@ -30,7 +30,7 @@ func (assert *DescriptorsTest) TestFindFileDescriptor() {
 		name  string
 		found bool
 	}{
-		{"todo.proto", true},
+		{"todo/service.proto", true},
 		{"doc.proto", true},
 		{"whodis.proto", false},
 	}

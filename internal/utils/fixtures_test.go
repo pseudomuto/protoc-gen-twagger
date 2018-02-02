@@ -21,7 +21,8 @@ func (assert *FixturesTest) TestLoadCodeGenRequest() {
 	assert.NoError(err)
 
 	assert.Contains(req.GetFileToGenerate(), "doc.proto")
-	assert.Contains(req.GetFileToGenerate(), "todo.proto")
+	assert.Contains(req.GetFileToGenerate(), "greeter/service.proto")
+	assert.Contains(req.GetFileToGenerate(), "todo/service.proto")
 }
 
 func (assert *FixturesTest) TestLoadCodeGenRequestNotFound() {

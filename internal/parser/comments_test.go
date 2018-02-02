@@ -22,7 +22,7 @@ func (assert *CommentsTest) SetupSuite() {
 	req, err := utils.LoadCodeGenRequest()
 	assert.NoError(err)
 
-	pf := utils.FindFileDescriptor("todo.proto", req.GetProtoFile())
+	pf := utils.FindFileDescriptor("todo/service.proto", req.GetProtoFile())
 	assert.NotNil(pf)
 
 	assert.comments = parser.ParseComments(pf)
