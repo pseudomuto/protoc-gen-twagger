@@ -9,11 +9,6 @@ import (
 	"github.com/pseudomuto/protoc-gen-twagger/internal/utils"
 )
 
-// adapted from options/annotations.pb.go to avoid circular reference
-type OpenAPI struct {
-	Openapi string `protobuf:"bytes,1,opt,name=openapi" json:"openapi,omitempty"`
-}
-
 type DescriptorsTest struct {
 	suite.Suite
 	descs []*descriptor.FileDescriptorProto

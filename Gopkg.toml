@@ -29,6 +29,7 @@
   branch = "master"
   name = "github.com/golang/protobuf"
 
-[[constraint]]
-  branch = "master"
-  name = "google.golang.org/genproto"
+[prune]
+  unused-packages = true
+	non-go = true
+	go-tests = true

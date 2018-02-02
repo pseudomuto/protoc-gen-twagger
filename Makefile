@@ -5,7 +5,6 @@ TEST_DEPS = fixtures/codegen.req options/annotations.pb.go options/swagger.pb.go
 setup:
 	retool sync
 	retool do dep ensure
-	retool do govendor fetch github.com/googleapis/googleapis/google/api
 
 clean:
 	@rm -rf _output protoc-gen-twagger

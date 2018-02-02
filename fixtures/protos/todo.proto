@@ -3,57 +3,50 @@ syntax = "proto3";
 package com.pseudomuto.todo.v1;
 option go_package = "fixtures";
 
-import "google/api/annotations.proto";
-
 // A service for managing "todo" items.
 //
 // Add, complete, and remove your items on your todo lists.
 service Todo {
   // Create a new todo list
-  rpc CreateList(CreateListRequest) returns (CreateListResponse) {
-    option (google.api.http) = {
-      post: "/twirp/com.pseudomuto.todo.v1.Todo/CreateList"
-      body: "*"
-    };
-  }
+  rpc CreateList(CreateListRequest) returns (CreateListResponse);
 
   // Add an item to your list
   //
   // Adds a new item to the specified list.
-  rpc AddItem(AddItemRequest) returns (AddItemResponse) {
-    option (google.api.http) = {
-      post: "/twirp/com.pseudomuto.todo.v1.Todo/AddItem"
-      body: "*"
-    };
-  }
+  rpc AddItem(AddItemRequest) returns (AddItemResponse);
 }
 
+// A list object.
 message List {
-  int64 id    = 1; // the id of the list
-  string name = 2;
+  int64 id    = 1; // The id of the list.
+  string name = 2; // The name of the list.
 }
 
+// A request object for creating todo lists.
 message CreateListRequest {
   string name = 1;
 }
 
+// A successfully created list response.
 message CreateListResponse {
-  List list = 1;
+  List list = 1; // The list that was created.
 }
 
+// A list item
 message Item {
-  int64 id       = 1;
-  string title   = 2;
-  bool completed = 3;
+  int64 id       = 1; // The id of the item.
+  string title   = 2; // The title of the item.
+  bool completed = 3; // Whether or not the item is completed.
 }
 
-// A request message for adding new items
+// A request message for adding new items.
 message AddItemRequest {
-  int64 list_id  = 1; // The id of the list to add to
-  string title   = 2; // The title of the item
-  bool completed = 3; // Whether or not the item is completed
+  int64 list_id  = 1; // The id of the list to add to.
+  string title   = 2; // The title of the item.
+  bool completed = 3; // Whether or not the item is completed.
 }
 
+// A successfully added item response.
 message AddItemResponse {
-  Item item = 1;
+  Item item = 1; // The list item that was added.
 }

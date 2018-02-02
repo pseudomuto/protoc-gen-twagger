@@ -47,6 +47,7 @@ func (assert *ParserTest) TestParseFileServices() {
 	assert.Equal("Create a new todo list", m.GetDescription())
 
 	m = svc.GetMethods()[1]
+	assert.Equal("/twirp/com.pseudomuto.todo.v1.Todo/AddItem", m.GetUrl())
 	assert.Equal("Add an item to your list\n\nAdds a new item to the specified list.", m.GetDescription())
 }
 
@@ -59,10 +60,10 @@ func (assert *ParserTest) TestParseFileMessages() {
 	assert.Nil(file.GetMessage("swingandamiss"))
 
 	m := file.GetMessage("AddItemRequest")
-	assert.Equal("A request message for adding new items", m.GetDescription())
+	assert.Equal("A request message for adding new items.", m.GetDescription())
 	assert.Len(m.GetMessageFields(), 3)
 	assert.Nil(m.GetMessageField("swingandamiss"))
 
 	f := m.GetMessageField("completed")
-	assert.Equal("Whether or not the item is completed", f.GetDescription())
+	assert.Equal("Whether or not the item is completed.", f.GetDescription())
 }

@@ -10,7 +10,11 @@
 [[projects]]
   branch = "master"
   name = "github.com/golang/protobuf"
-  packages = ["proto","protoc-gen-go/descriptor","protoc-gen-go/plugin"]
+  packages = [
+    "proto",
+    "protoc-gen-go/descriptor",
+    "protoc-gen-go/plugin"
+  ]
   revision = "c65a0412e71e8b9b3bfd22925720d23c0f054237"
 
 [[projects]]
@@ -21,19 +25,17 @@
 
 [[projects]]
   name = "github.com/stretchr/testify"
-  packages = ["assert","require","suite"]
+  packages = [
+    "assert",
+    "require",
+    "suite"
+  ]
   revision = "b91bfb9ebec76498946beb6af7c0230c7cc7ba6c"
   version = "v1.2.0"
-
-[[projects]]
-  branch = "master"
-  name = "google.golang.org/genproto"
-  packages = ["googleapis/api/annotations"]
-  revision = "a8101f21cf983e773d0c1133ebc5424792003214"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "082f2f46b7c27de0d309760bb083c867a31db2924113a3f7477badb728f20c75"
+  inputs-digest = "7475ca9f8ef9b4ecb27927af6d2f795115741d314a68bcfb81b6f1c4218de904"
   solver-name = "gps-cdcl"
   solver-version = 1

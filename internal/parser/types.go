@@ -6,14 +6,14 @@ import (
 
 type File struct {
 	*descriptor.FileDescriptorProto
-	description string
-	messages    []*Message
-	services    []*Service
+	Description string
+	Messages    []*Message
+	Services    []*Service
 }
 
-func (f *File) GetDescription() string  { return f.description }
-func (f *File) GetMessages() []*Message { return f.messages }
-func (f *File) GetServices() []*Service { return f.services }
+func (f *File) GetDescription() string  { return f.Description }
+func (f *File) GetMessages() []*Message { return f.Messages }
+func (f *File) GetServices() []*Service { return f.Services }
 
 func (f *File) GetMessage(name string) *Message {
 	for _, m := range f.GetMessages() {
@@ -37,12 +37,12 @@ func (f *File) GetService(name string) *Service {
 
 type Message struct {
 	*descriptor.DescriptorProto
-	description string
-	fields      []*MessageField
+	Description string
+	Fields      []*MessageField
 }
 
-func (m *Message) GetDescription() string            { return m.description }
-func (m *Message) GetMessageFields() []*MessageField { return m.fields }
+func (m *Message) GetDescription() string            { return m.Description }
+func (m *Message) GetMessageFields() []*MessageField { return m.Fields }
 
 func (m *Message) GetMessageField(name string) *MessageField {
 	for _, f := range m.GetMessageFields() {
@@ -56,23 +56,25 @@ func (m *Message) GetMessageField(name string) *MessageField {
 
 type MessageField struct {
 	*descriptor.FieldDescriptorProto
-	description string
+	Description string
 }
 
-func (mf *MessageField) GetDescription() string { return mf.description }
+func (mf *MessageField) GetDescription() string { return mf.Description }
 
 type Service struct {
 	*descriptor.ServiceDescriptorProto
-	description string
-	methods     []*ServiceMethod
+	Description string
+	Methods     []*ServiceMethod
 }
 
-func (s *Service) GetDescription() string       { return s.description }
-func (s *Service) GetMethods() []*ServiceMethod { return s.methods }
+func (s *Service) GetDescription() string       { return s.Description }
+func (s *Service) GetMethods() []*ServiceMethod { return s.Methods }
 
 type ServiceMethod struct {
 	*descriptor.MethodDescriptorProto
-	description string
+	Description string
+	Url         string
 }
 
-func (m *ServiceMethod) GetDescription() string { return m.description }
+func (m *ServiceMethod) GetDescription() string { return m.Description }
+func (m *ServiceMethod) GetUrl() string         { return m.Url }

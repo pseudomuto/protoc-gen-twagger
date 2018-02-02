@@ -18,6 +18,8 @@ It has these top-level messages:
 	ServerVariable
 	Tag
 	ExternalDocumentation
+	Path
+	Operation
 */
 package options
 

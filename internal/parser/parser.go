@@ -22,9 +22,9 @@ const (
 func ParseFile(fd *descriptor.FileDescriptorProto) *File {
 	comments := ParseComments(fd)
 
-	file := &File{FileDescriptorProto: fd, description: comments[fmt.Sprintf("%d", packageCommentPath)]}
-	file.messages = parseMessages(fd.GetMessageType(), comments)
-	file.services = parseServices(fd.GetService(), comments)
+	file := &File{FileDescriptorProto: fd, Description: comments[fmt.Sprintf("%d", packageCommentPath)]}
+	file.Messages = parseMessages(fd.GetMessageType(), comments)
+	file.Services = parseServices(fd.GetService(), file.GetPackage(), comments)
 
 	return file
 }
@@ -37,8 +37,8 @@ func parseMessages(protos []*descriptor.DescriptorProto, comments Comments) []*M
 
 		msgs[i] = &Message{
 			DescriptorProto: md,
-			description:     comments[commentPath],
-			fields:          parseMessageFields(md.GetField(), comments, commentPath),
+			Description:     comments[commentPath],
+			Fields:          parseMessageFields(md.GetField(), comments, commentPath),
 		}
 	}
 
@@ -51,14 +51,14 @@ func parseMessageFields(protos []*descriptor.FieldDescriptorProto, comments Comm
 	for i, fd := range protos {
 		fields[i] = &MessageField{
 			FieldDescriptorProto: fd,
-			description:          comments[fmt.Sprintf("%s.%d.%d", commentPrefix, messageFieldCommentPath, i)],
+			Description:          comments[fmt.Sprintf("%s.%d.%d", commentPrefix, messageFieldCommentPath, i)],
 		}
 	}
 
 	return fields
 }
 
-func parseServices(protos []*descriptor.ServiceDescriptorProto, comments Comments) []*Service {
+func parseServices(protos []*descriptor.ServiceDescriptorProto, pkg string, comments Comments) []*Service {
 	svcs := make([]*Service, len(protos))
 
 	for i, sd := range protos {
@@ -66,21 +66,22 @@ func parseServices(protos []*descriptor.ServiceDescriptorProto, comments Comment
 
 		svcs[i] = &Service{
 			ServiceDescriptorProto: sd,
-			description:            comments[commentPath],
-			methods:                parseServiceMethods(sd.GetMethod(), comments, commentPath),
+			Description:            comments[commentPath],
+			Methods:                parseServiceMethods(sd.GetMethod(), sd.GetName(), pkg, comments, commentPath),
 		}
 	}
 
 	return svcs
 }
 
-func parseServiceMethods(protos []*descriptor.MethodDescriptorProto, comments Comments, commentPrefix string) []*ServiceMethod {
+func parseServiceMethods(protos []*descriptor.MethodDescriptorProto, svc, pkg string, comments Comments, commentPrefix string) []*ServiceMethod {
 	methods := make([]*ServiceMethod, len(protos))
 
 	for i, md := range protos {
 		methods[i] = &ServiceMethod{
 			MethodDescriptorProto: md,
-			description:           comments[fmt.Sprintf("%s.%d.%d", commentPrefix, serviceMethodCommentPath, i)],
+			Description:           comments[fmt.Sprintf("%s.%d.%d", commentPrefix, serviceMethodCommentPath, i)],
+			Url:                   fmt.Sprintf("/twirp/%s.%s/%s", pkg, svc, md.GetName()),
 		}
 	}
 

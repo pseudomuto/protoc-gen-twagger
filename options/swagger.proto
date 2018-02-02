@@ -5,7 +5,6 @@ option go_package = "options";
 
 message OpenAPI {
   reserved 3; // reserved for security
-  reserved 6; // reserved for paths
   reserved 7; // reserved for components
 
   string openapi                      = 1; // REQUIRED. This string MUST be the semantic version of the OpenAPI Specification.
@@ -13,6 +12,7 @@ message OpenAPI {
   repeated Server servers             = 4; // An array of server objects.
   repeated Tag tags                   = 5; // A list of tags used by the specification with additional metadata.
 
+  map<string, Path> paths             = 6; // REQUIRED. The available paths and operations for the API.
   ExternalDocumentation external_docs = 8; // Additional external documentation.
 }
 
@@ -57,4 +57,25 @@ message Tag {
 message ExternalDocumentation {
   string url         = 1; // REQUIRED. The URL for the target documentation.
   string description = 2; // A short description of the target documentation.
+}
+
+message Path {
+  string summary     = 1; // An optional, summary, intended to apply to all operations in this path.
+	string description = 2; // An optional, description, intended to apply to all operations in this path.
+	Operation delete   = 3; // A definition of a DELETE operation on this path.
+	Operation get      = 4; // A definition of a GET operation on this path.
+	Operation head     = 5; // A definition of a HEAD operation on this path.
+	Operation options  = 6; // A definition of a OPTIONS operation on this path.
+	Operation patch    = 7; // A definition of a PATCH operation on this path.
+	Operation post     = 8; // A definition of a POST operation on this path.
+	Operation put      = 9; // A definition of a PUT operation on this path.
+	Operation trace    = 10; // A definition of a TRACE operation on this path.
+}
+
+message Operation {
+  repeated string tags                = 1; // A list of tags for API documentation control.
+	string summary                      = 2; // A summary of what the operation does.
+	string description                  = 3; // A verbose explanation of the operation.
+  ExternalDocumentation external_docs = 4; // Additional external documentation for this operation.
+	string operation_id                 = 5; // A unique string to identify the operation.
 }

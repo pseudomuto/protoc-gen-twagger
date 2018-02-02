@@ -34,7 +34,7 @@ func (assert *CommentsTest) TestComments() {
 		value string
 	}{
 		{"6.0.2.1", "Add an item to your list\n\nAdds a new item to the specified list."}, // leading commend
-		{"4.0.2.0", "the id of the list"},                                                 // tailing comment
+		{"4.0.2.0", "The id of the list."},                                                // tailing comment
 	}
 
 	for _, test := range tests {

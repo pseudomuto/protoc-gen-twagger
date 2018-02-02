@@ -42,6 +42,18 @@ func (p *Plugin) generateSwagger() (string, error) {
 		return "", fmt.Errorf("Couldn't find api options in any of the files")
 	}
 
+	doc.Paths = make(map[string]*options.Path)
+
+	for _, file := range files {
+		doc.Tags = append(doc.Tags, ServicesToTags(file.GetServices())...)
+
+		for _, svc := range file.GetServices() {
+			for _, method := range svc.GetMethods() {
+				doc.Paths[method.GetUrl()] = MethodToPath(method, svc.GetName())
+			}
+		}
+	}
+
 	buf := new(bytes.Buffer)
 	enc := json.NewEncoder(buf)
 	enc.SetIndent("", "  ")
