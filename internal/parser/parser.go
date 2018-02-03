@@ -3,6 +3,7 @@ package parser
 import (
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 
+	"context"
 	"fmt"
 )
 
@@ -21,6 +22,8 @@ const (
 
 func ParseFile(fd *descriptor.FileDescriptorProto) *File {
 	comments := ParseComments(fd)
+	ctx := ContextWithComments(context.Background(), comments)
+	ctx = ContextWithPackage(ctx, fd.GetPackage())
 
 	file := &File{
 		FileDescriptorProto: fd,
@@ -28,22 +31,26 @@ func ParseFile(fd *descriptor.FileDescriptorProto) *File {
 		Props:               make(Properties),
 	}
 
-	file.Messages = parseMessages(fd.GetMessageType(), comments)
-	file.Services = parseServices(fd.GetService(), file.GetPackage(), comments)
+	file.Messages = parseMessages(ctx, fd.GetMessageType())
+	file.Services = parseServices(ctx, fd.GetService())
 
 	return file
 }
 
-func parseMessages(protos []*descriptor.DescriptorProto, comments Comments) []*Message {
+func parseMessages(ctx context.Context, protos []*descriptor.DescriptorProto) []*Message {
 	msgs := make([]*Message, len(protos))
+	comments, _ := CommentsFromContext(ctx)
+	pkg, _ := PackageFromContext(ctx)
 
 	for i, md := range protos {
 		commentPath := fmt.Sprintf("%d.%d", messageCommentPath, i)
+		subCtx := ContextWithLocationPrefix(ctx, commentPath)
 
 		msgs[i] = &Message{
 			DescriptorProto: md,
 			Description:     comments[commentPath],
-			Fields:          parseMessageFields(md.GetField(), comments, commentPath),
+			Fields:          parseMessageFields(subCtx, md.GetField()),
+			Package:         pkg,
 			Props:           make(Properties),
 		}
 	}
@@ -51,8 +58,10 @@ func parseMessages(protos []*descriptor.DescriptorProto, comments Comments) []*M
 	return msgs
 }
 
-func parseMessageFields(protos []*descriptor.FieldDescriptorProto, comments Comments, commentPrefix string) []*MessageField {
+func parseMessageFields(ctx context.Context, protos []*descriptor.FieldDescriptorProto) []*MessageField {
 	fields := make([]*MessageField, len(protos))
+	comments, _ := CommentsFromContext(ctx)
+	commentPrefix, _ := LocationPrefixFromContext(ctx)
 
 	for i, fd := range protos {
 		fields[i] = &MessageField{
@@ -65,16 +74,21 @@ func parseMessageFields(protos []*descriptor.FieldDescriptorProto, comments Comm
 	return fields
 }
 
-func parseServices(protos []*descriptor.ServiceDescriptorProto, pkg string, comments Comments) []*Service {
+func parseServices(ctx context.Context, protos []*descriptor.ServiceDescriptorProto) []*Service {
 	svcs := make([]*Service, len(protos))
+	comments, _ := CommentsFromContext(ctx)
+	pkg, _ := PackageFromContext(ctx)
 
 	for i, sd := range protos {
 		commentPath := fmt.Sprintf("%d.%d", serviceCommentPath, i)
+		subCtx := ContextWithLocationPrefix(ctx, commentPath)
+		subCtx = ContextWithService(subCtx, sd.GetName())
 
 		svcs[i] = &Service{
 			ServiceDescriptorProto: sd,
 			Description:            comments[commentPath],
-			Methods:                parseServiceMethods(sd.GetMethod(), sd.GetName(), pkg, comments, commentPath),
+			Methods:                parseServiceMethods(subCtx, sd.GetMethod()),
+			Package:                pkg,
 			Props:                  make(Properties),
 		}
 	}
@@ -82,8 +96,13 @@ func parseServices(protos []*descriptor.ServiceDescriptorProto, pkg string, comm
 	return svcs
 }
 
-func parseServiceMethods(protos []*descriptor.MethodDescriptorProto, svc, pkg string, comments Comments, commentPrefix string) []*ServiceMethod {
+func parseServiceMethods(ctx context.Context, protos []*descriptor.MethodDescriptorProto) []*ServiceMethod {
 	methods := make([]*ServiceMethod, len(protos))
+
+	pkg, _ := PackageFromContext(ctx)
+	svc, _ := ServiceFromContext(ctx)
+	comments, _ := CommentsFromContext(ctx)
+	commentPrefix, _ := LocationPrefixFromContext(ctx)
 
 	for i, md := range protos {
 		methods[i] = &ServiceMethod{

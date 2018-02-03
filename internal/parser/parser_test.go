@@ -41,6 +41,7 @@ func (assert *ParserTest) TestParseFileServices() {
 
 	svc := file.GetService("Todo")
 	assert.Contains(svc.GetDescription(), "A service for managing \"todo\" items.\n\n")
+	assert.Equal("com.pseudomuto.todo.v1", svc.GetPackage())
 	assert.Len(svc.GetMethods(), 2)
 
 	m := svc.GetMethods()[0]
@@ -61,6 +62,7 @@ func (assert *ParserTest) TestParseFileMessages() {
 
 	m := file.GetMessage("AddItemRequest")
 	assert.Equal("A request message for adding new items.", m.GetDescription())
+	assert.Equal("com.pseudomuto.todo.v1", m.GetPackage())
 	assert.Len(m.GetMessageFields(), 3)
 	assert.Nil(m.GetMessageField("swingandamiss"))
 

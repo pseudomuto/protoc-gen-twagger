@@ -8,7 +8,7 @@ type Properties map[string]string
 
 type File struct {
 	*descriptor.FileDescriptorProto
-	Namespace   string
+	Namespace   string // TODO: Get rid of this
 	Description string
 	Messages    []*Message
 	Services    []*Service
@@ -46,12 +46,14 @@ type Message struct {
 	*descriptor.DescriptorProto
 	Description string
 	Fields      []*MessageField
+	Package     string
 
 	Props Properties
 }
 
 func (m *Message) GetDescription() string            { return m.Description }
 func (m *Message) GetMessageFields() []*MessageField { return m.Fields }
+func (m *Message) GetPackage() string                { return m.Package }
 func (m *Message) GetProps() Properties              { return m.Props }
 
 func (m *Message) GetMessageField(name string) *MessageField {
@@ -78,12 +80,14 @@ type Service struct {
 	*descriptor.ServiceDescriptorProto
 	Description string
 	Methods     []*ServiceMethod
+	Package     string
 
 	Props Properties
 }
 
 func (s *Service) GetDescription() string       { return s.Description }
 func (s *Service) GetMethods() []*ServiceMethod { return s.Methods }
+func (s *Service) GetPackage() string           { return s.Package }
 func (s *Service) GetProps() Properties         { return s.Props }
 
 type ServiceMethod struct {
