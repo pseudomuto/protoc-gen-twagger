@@ -1,13 +1,14 @@
 package internal
 
 import (
+	"context"
 	"strings"
 
 	"github.com/pseudomuto/protoc-gen-twagger/internal/parser"
 	"github.com/pseudomuto/protoc-gen-twagger/options"
 )
 
-func ServicesToTags(svcs []*parser.Service) []*options.Tag {
+func ServicesToTags(ctx context.Context, svcs []*parser.Service) []*options.Tag {
 	tags := make([]*options.Tag, len(svcs))
 
 	for i, svc := range svcs {
@@ -20,7 +21,7 @@ func ServicesToTags(svcs []*parser.Service) []*options.Tag {
 	return tags
 }
 
-func MethodToPath(method *parser.ServiceMethod, tag string) *options.Path {
+func MethodToPath(ctx context.Context, method *parser.ServiceMethod, tag string) *options.Path {
 	path := &options.Path{
 		Post: &options.Operation{
 			Summary:     summarize(method.GetDescription()),

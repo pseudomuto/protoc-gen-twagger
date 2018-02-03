@@ -1,7 +1,11 @@
 syntax = "proto3";
 
+import "options/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
 package com.pseudomuto.todo.v1;
-option go_package = "fixtures";
+option go_package = "todo";
+option (com.pseudomuto.protoc_gen_twagger.options.namespace) = "todo";
 
 // A service for managing "todo" items.
 //
@@ -18,8 +22,9 @@ service Todo {
 
 // A list object.
 message List {
-  int64 id    = 1; // The id of the list.
-  string name = 2; // The name of the list.
+  int64 id                             = 1; // The id of the list.
+  string name                          = 2; // The name of the list.
+	google.protobuf.Timestamp created_at = 3; // The timestamp for creation.
 }
 
 // A request object for creating todo lists.
@@ -34,9 +39,10 @@ message CreateListResponse {
 
 // A list item
 message Item {
-  int64 id       = 1; // The id of the item.
-  string title   = 2; // The title of the item.
-  bool completed = 3; // Whether or not the item is completed.
+  int64 id                             = 1; // The id of the item.
+  string title                         = 2; // The title of the item.
+  bool completed                       = 3; // Whether or not the item is completed.
+	google.protobuf.Timestamp created_at = 4; // The timestamp for creation.
 }
 
 // A request message for adding new items.

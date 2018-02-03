@@ -1,7 +1,10 @@
 syntax = "proto3";
 
+import "options/annotations.proto";
+
 package com.pseudomuto.greeter.v1;
 option go_package = "greeter";
+option (com.pseudomuto.protoc_gen_twagger.options.namespace) = "greeter";
 
 // The greeting service definition.
 service Greeter {

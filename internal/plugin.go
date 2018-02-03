@@ -5,11 +5,10 @@ import (
 	"github.com/golang/protobuf/protoc-gen-go/plugin"
 
 	"bytes"
+	"context"
 	"encoding/json"
-	"fmt"
 
 	"github.com/pseudomuto/protoc-gen-twagger/internal/parser"
-	"github.com/pseudomuto/protoc-gen-twagger/options"
 )
 
 type Plugin struct {
@@ -21,48 +20,27 @@ func NewPlugin(req *plugin_go.CodeGeneratorRequest) *Plugin {
 }
 
 func (p *Plugin) Generate() (*plugin_go.CodeGeneratorResponse, error) {
-	doc, err := p.generateSwagger()
-	if err != nil {
+	ctx := context.Background()
+	gen := NewGenerator(p.parseFiles())
+	if err := gen.Generate(ctx); err != nil {
 		return nil, err
-	}
-
-	resp := new(plugin_go.CodeGeneratorResponse)
-	resp.File = append(resp.File, &plugin_go.CodeGeneratorResponse_File{
-		Name:    proto.String("swagger.json"),
-		Content: proto.String(doc),
-	})
-
-	return resp, nil
-}
-
-func (p *Plugin) generateSwagger() (string, error) {
-	files := p.parseFiles()
-	doc := findTopLevelOption(files)
-	if doc == nil {
-		return "", fmt.Errorf("Couldn't find api options in any of the files")
-	}
-
-	doc.Paths = make(map[string]*options.Path)
-
-	for _, file := range files {
-		doc.Tags = append(doc.Tags, ServicesToTags(file.GetServices())...)
-
-		for _, svc := range file.GetServices() {
-			for _, method := range svc.GetMethods() {
-				doc.Paths[method.GetUrl()] = MethodToPath(method, svc.GetName())
-			}
-		}
 	}
 
 	buf := new(bytes.Buffer)
 	enc := json.NewEncoder(buf)
 	enc.SetIndent("", "  ")
 
-	if err := enc.Encode(doc); err != nil {
-		return "", err
+	if err := enc.Encode(gen.api); err != nil {
+		return nil, err
 	}
 
-	return buf.String(), nil
+	resp := new(plugin_go.CodeGeneratorResponse)
+	resp.File = append(resp.File, &plugin_go.CodeGeneratorResponse_File{
+		Name:    proto.String("swagger.json"),
+		Content: proto.String(buf.String()),
+	})
+
+	return resp, nil
 }
 
 func (p *Plugin) parseFiles() []*parser.File {
@@ -73,21 +51,4 @@ func (p *Plugin) parseFiles() []*parser.File {
 	}
 
 	return files
-}
-
-func findTopLevelOption(files []*parser.File) *options.OpenAPI {
-	for _, file := range files {
-		if ext, err := proto.GetExtension(file.GetOptions(), options.E_Api); err == nil {
-			if api, ok := ext.(*options.OpenAPI); ok {
-				info := api.GetInfo()
-				if info.GetDescription() == "" {
-					info.Description = file.GetDescription()
-				}
-
-				return api
-			}
-		}
-	}
-
-	return nil
 }

@@ -5,7 +5,6 @@ option go_package = "options";
 
 message OpenAPI {
   reserved 3; // reserved for security
-  reserved 7; // reserved for components
 
   string openapi                      = 1; // REQUIRED. This string MUST be the semantic version of the OpenAPI Specification.
   Info info                           = 2; // REQUIRED. Provides metadata about the API.
@@ -13,6 +12,7 @@ message OpenAPI {
   repeated Tag tags                   = 5; // A list of tags used by the specification with additional metadata.
 
   map<string, Path> paths             = 6; // REQUIRED. The available paths and operations for the API.
+	Components components               = 7; // The reusable components for the API.
   ExternalDocumentation external_docs = 8; // Additional external documentation.
 }
 
@@ -78,4 +78,17 @@ message Operation {
 	string description                  = 3; // A verbose explanation of the operation.
   ExternalDocumentation external_docs = 4; // Additional external documentation for this operation.
 	string operation_id                 = 5; // A unique string to identify the operation.
+}
+
+message Components {
+  map<string, Schema> schemas = 1; // An object to hold reusable schemas.
+}
+
+message Schema {
+	string description             = 1; // The description of the schema.
+  string type                    = 2; // The schema type (e.g. "object", "string", etc.).
+	map<string, Schema> properties = 3; // The properties of this schema.
+	repeated string required       = 4; // The set of required fields.
+	string format                  = 5; // The format of this schema ("date-time", "password", etc.).
+	string ref                     = 6; // The reference string.
 }

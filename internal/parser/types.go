@@ -8,6 +8,7 @@ type Properties map[string]string
 
 type File struct {
 	*descriptor.FileDescriptorProto
+	Namespace   string
 	Description string
 	Messages    []*Message
 	Services    []*Service
@@ -15,6 +16,7 @@ type File struct {
 	Props Properties
 }
 
+func (f *File) GetNamespace() string    { return f.Namespace }
 func (f *File) GetDescription() string  { return f.Description }
 func (f *File) GetMessages() []*Message { return f.Messages }
 func (f *File) GetServices() []*Service { return f.Services }

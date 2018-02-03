@@ -5,6 +5,7 @@ import (
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/stretchr/testify/suite"
 
+	"context"
 	"testing"
 
 	"github.com/pseudomuto/protoc-gen-twagger/internal"
@@ -27,7 +28,7 @@ func (assert *ServicesTest) TestServicesToTags() {
 		Description: "Summary here\n\nDescription here",
 	}
 
-	tags := internal.ServicesToTags([]*parser.Service{service})
+	tags := internal.ServicesToTags(context.Background(), []*parser.Service{service})
 	assert.Len(tags, 1)
 	assert.Equal("MyService", tags[0].GetName())
 	assert.Equal("Summary here", tags[0].GetDescription())
@@ -41,7 +42,7 @@ func (assert *ServicesTest) TestMethodToPath() {
 		Description: "Summary here\n\nDescription down here",
 	}
 
-	path := internal.MethodToPath(method, "MyService")
+	path := internal.MethodToPath(context.Background(), method, "MyService")
 	assert.Equal("Summary here", path.GetPost().GetSummary())
 	assert.Equal("Description down here", path.GetPost().GetDescription())
 	assert.Equal([]string{"MyService"}, path.GetPost().GetTags())
