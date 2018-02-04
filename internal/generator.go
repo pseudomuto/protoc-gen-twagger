@@ -28,6 +28,8 @@ func (g *Generator) Generate(ctx context.Context) error {
 	}
 
 	for _, file := range g.files {
+		// TODO: This is kinda shit. It's used to avoid generating models for any imported proto files. Would love to
+		// only generate messages that are used/referenced in the input protos.
 		ext, err := proto.GetExtension(file.GetOptions(), options.E_Namespace)
 		if err != nil {
 			continue

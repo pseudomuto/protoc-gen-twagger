@@ -5,6 +5,7 @@ import (
 
 	"context"
 	"fmt"
+	"strings"
 )
 
 const (
@@ -105,8 +106,25 @@ func parseServiceMethods(ctx context.Context, protos []*descriptor.MethodDescrip
 			MethodDescriptorProto: md,
 			Description:           comments[fmt.Sprintf("%s.%d.%d", commentPrefix, serviceMethodCommentPath, i)],
 			Url:                   fmt.Sprintf("/twirp/%s.%s/%s", pkg, svc, md.GetName()),
+			InputRef:              typeRef(md.GetInputType()),
+			OutputRef:             typeRef(md.GetOutputType()),
 		}
 	}
 
 	return methods
+}
+
+func typeRef(typeStr string) *TypeReference {
+	parts := strings.Split(typeStr, ".")
+	pkg := ""
+
+	if len(parts) > 2 {
+		pkg = strings.Join(parts[1:len(parts)-1], ".")
+	}
+
+	return &TypeReference{
+		Package:        pkg,
+		TypeName:       parts[len(parts)-1],
+		FullyQualified: parts[0] == "",
+	}
 }

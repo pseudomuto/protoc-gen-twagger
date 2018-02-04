@@ -73,11 +73,20 @@ message Path {
 }
 
 message Operation {
+	reserved 6; // Reserved for parameters
+	reserved 7; // Reserved for requestBody
+	reserved 9; // Reserved for callbacks
+	reserved 11; // Reserved for security
+	reserved 12; // Reserved for servers
+
   repeated string tags                = 1; // A list of tags for API documentation control.
 	string summary                      = 2; // A summary of what the operation does.
 	string description                  = 3; // A verbose explanation of the operation.
   ExternalDocumentation external_docs = 4; // Additional external documentation for this operation.
 	string operation_id                 = 5; // A unique string to identify the operation.
+
+  map<string, Response> responses = 8; // The set of defined responses.
+	bool deprecated                 = 10; // Declares this operation to be deprecated.
 }
 
 message Components {
@@ -91,4 +100,20 @@ message Schema {
 	repeated string required       = 4; // The set of required fields.
 	string format                  = 5; // The format of this schema ("date-time", "password", etc.).
 	string ref                     = 6; // The reference string.
+}
+
+message Response {
+	reserved 2; // Reserved for headers
+	reserved 4; // Reserved for links
+
+  string description             = 1; // REQUIRED. A short description of the response
+	map<string, MediaType> content = 3; // A map containing descriptions of potential response payloads.
+}
+
+message MediaType {
+	reserved 2; // Reserved for example
+	reserved 3; // Reserved for examples
+	reserved 4; // Reserved for encoding
+
+  Schema schema = 1; // The schema defining the type used for the request body.
 }

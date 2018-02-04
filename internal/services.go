@@ -2,6 +2,7 @@ package internal
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/pseudomuto/protoc-gen-twagger/internal/parser"
@@ -27,6 +28,18 @@ func MethodToPath(ctx context.Context, method *parser.ServiceMethod, tag string)
 			Summary:     summarize(method.GetDescription()),
 			Description: describe(method.GetDescription()),
 			Tags:        []string{tag},
+			Responses: map[string]*options.Response{
+				"200": &options.Response{
+					Description: "The successful response",
+					Content: map[string]*options.MediaType{
+						"application/json": &options.MediaType{
+							Schema: &options.Schema{
+								Ref: fmt.Sprintf("#/components/schemas/%s", method.GetOutputRef().GetTypeName()),
+							},
+						},
+					},
+				},
+			},
 		},
 	}
 

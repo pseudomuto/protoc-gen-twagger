@@ -46,6 +46,8 @@ func (assert *ParserTest) TestParseFileServices() {
 
 	m := svc.GetMethods()[0]
 	assert.Equal("Create a new todo list", m.GetDescription())
+	assert.Equal("CreateListRequest", m.GetInputRef().GetTypeName())
+	assert.Equal("CreateListResponse", m.GetOutputRef().GetTypeName())
 
 	m = svc.GetMethods()[1]
 	assert.Equal("/twirp/com.pseudomuto.todo.v1.Todo/AddItem", m.GetUrl())

@@ -4,6 +4,16 @@ import (
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 )
 
+type TypeReference struct {
+	Package        string
+	TypeName       string
+	FullyQualified bool
+}
+
+func (tr *TypeReference) GetPackage() string      { return tr.Package }
+func (tr *TypeReference) GetTypeName() string     { return tr.TypeName }
+func (tr *TypeReference) GetFullyQualified() bool { return tr.FullyQualified }
+
 type File struct {
 	*descriptor.FileDescriptorProto
 	Namespace   string // TODO: Get rid of this
@@ -78,9 +88,13 @@ func (s *Service) GetPackage() string           { return s.Package }
 
 type ServiceMethod struct {
 	*descriptor.MethodDescriptorProto
+	InputRef    *TypeReference
+	OutputRef   *TypeReference
 	Description string
 	Url         string
 }
 
-func (m *ServiceMethod) GetDescription() string { return m.Description }
-func (m *ServiceMethod) GetUrl() string         { return m.Url }
+func (m *ServiceMethod) GetDescription() string       { return m.Description }
+func (m *ServiceMethod) GetUrl() string               { return m.Url }
+func (m *ServiceMethod) GetInputRef() *TypeReference  { return m.InputRef }
+func (m *ServiceMethod) GetOutputRef() *TypeReference { return m.OutputRef }

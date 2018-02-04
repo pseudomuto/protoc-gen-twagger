@@ -22,6 +22,8 @@ It has these top-level messages:
 	Operation
 	Components
 	Schema
+	Response
+	MediaType
 */
 package options
 
