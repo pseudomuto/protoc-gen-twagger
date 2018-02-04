@@ -3,7 +3,6 @@ syntax = "proto3";
 package com.pseudomuto.protoc_gen_twagger.options;
 option go_package = "options";
 
-import "swagger.proto";
 import "google/protobuf/descriptor.proto";
 
 extend google.protobuf.FileOptions {
@@ -18,4 +17,170 @@ extend google.protobuf.FileOptions {
   // This range is reserved for internal use within individual organizations, so you can use numbers in this range
   // freely for in-house applications
   string namespace = 81099;
+}
+
+message OpenAPI {
+  string openapi                        = 1; // REQUIRED. This string MUST be the semantic version of the OpenAPI spec.
+  Info info                             = 2; // REQUIRED. Provides metadata about the API.
+	repeated SecurityRequirement security = 3; // A declaration of which security mechanisms can be used across the API.
+  repeated Server servers               = 4; // An array of server objects.
+  repeated Tag tags                     = 5; // A list of tags used by the specification with additional metadata.
+
+  map<string, Path> paths             = 6; // REQUIRED. The available paths and operations for the API.
+	Components components               = 7; // The reusable components for the API.
+  ExternalDocumentation external_docs = 8; // Additional external documentation.
+}
+
+message Info {
+  string title            = 1; // REQUIRED. The title of the application.
+  string description      = 2; // A short description of the application.
+  string terms_of_service = 3; // A URL to the Terms of Service for the API.
+  Contact contact         = 4; // The contact information for the exposed API.
+  License license         = 5; // The license information for the exposed API.
+  string version          = 6; // REQUIRED. The version of the OpenAPI document.
+}
+
+message Contact {
+  string name  = 1; // The identifying name of the contact person/organization.
+  string url   = 2; // The URL pointing to the contact information.
+  string email = 3; // email address of the contact person/organization.
+}
+
+message License {
+  string name  = 1; // REQUIRED. The license name used for the API.
+  string url   = 2; // A URL to the license used for the API.
+}
+
+message Server {
+  string url                            = 1; // REQUIRED. A URL to the target host.
+  string description                    = 2; // An optional string describing the host designated by the URL.
+  map<string, ServerVariable> variables = 3; // A map between a variable name and its value.
+}
+
+message ServerVariable {
+  repeated string enum = 1; // An enumeration of string values to be used if the options are from a limited set.
+  string default       = 2; // REQUIRED. The default value to use for substitution.
+  string description   = 3; // An optional description for the server variable.
+}
+
+message Tag {
+  string name                         = 1; // REQUIRED. The name of the tag.
+  string description                  = 2; // A short description for the tag.
+  ExternalDocumentation external_docs = 3; // Additional external documentation for this tag.
+}
+
+message ExternalDocumentation {
+  string url         = 1; // REQUIRED. The URL for the target documentation.
+  string description = 2; // A short description of the target documentation.
+}
+
+message Path {
+  string summary     = 1; // An optional, summary, intended to apply to all operations in this path.
+	string description = 2; // An optional, description, intended to apply to all operations in this path.
+	Operation delete   = 3; // A definition of a DELETE operation on this path.
+	Operation get      = 4; // A definition of a GET operation on this path.
+	Operation head     = 5; // A definition of a HEAD operation on this path.
+	Operation options  = 6; // A definition of a OPTIONS operation on this path.
+	Operation patch    = 7; // A definition of a PATCH operation on this path.
+	Operation post     = 8; // A definition of a POST operation on this path.
+	Operation put      = 9; // A definition of a PUT operation on this path.
+	Operation trace    = 10; // A definition of a TRACE operation on this path.
+}
+
+message Operation {
+	reserved 9; // Reserved for callbacks
+	reserved 11; // Reserved for security
+	reserved 12; // Reserved for servers
+
+  repeated string tags                = 1; // A list of tags for API documentation control.
+	string summary                      = 2; // A summary of what the operation does.
+	string description                  = 3; // A verbose explanation of the operation.
+  ExternalDocumentation external_docs = 4; // Additional external documentation for this operation.
+	string operation_id                 = 5; // A unique string to identify the operation.
+
+	repeated Parameter parameters   = 6; // A list of parameters that are applicable for this operation..
+	RequestBody request_body        = 7; // The request body applicable for this operation.
+  map<string, Response> responses = 8; // The set of defined responses.
+	bool deprecated                 = 10; // Declares this operation to be deprecated.
+}
+
+message Components {
+  map<string, Schema> schemas                  = 1; // An object to hold reusable schemas.
+	map<string, SecurityScheme> security_schemes = 2; // An object to hold reusable security schemes.
+}
+
+message Schema {
+	string description             = 1; // The description of the schema.
+  string type                    = 2; // The schema type (e.g. "object", "string", etc.).
+	map<string, Schema> properties = 3; // The properties of this schema.
+	repeated string required       = 4; // The set of required fields.
+	string format                  = 5; // The format of this schema ("date-time", "password", etc.).
+	string ref                     = 6; // The reference string.
+}
+
+message Parameter {
+  enum In {
+	  QUERY  = 0;
+		HEADER = 1;
+		PATH   = 2;
+		COOKIE = 3;
+	}
+
+	string name            = 1; // REQUIRED. The name of the parameter.
+	In in                  = 2; // REQUIRED. The location of the parameter.
+	string description     = 3; // A brief description of the parameter.
+	bool required          = 4; // Determines whether or not this parameter is mandatory.
+	bool allow_empty_value = 5; // Sets the ability to pass empty-valued parameters (valid only for query parameters)
+}
+
+message RequestBody {
+  string description             = 1; // A brief description of the request body.
+	map<string, MediaType> content = 2; // REQUIRED. The content of the request body.
+	bool required                  = 3; // Determines if the request body is required in the request.
+}
+
+message Response {
+	reserved 2; // Reserved for headers
+	reserved 4; // Reserved for links
+
+  string description             = 1; // REQUIRED. A short description of the response
+	map<string, MediaType> content = 3; // A map containing descriptions of potential response payloads.
+}
+
+message MediaType {
+	reserved 2; // Reserved for example
+	reserved 3; // Reserved for examples
+	reserved 4; // Reserved for encoding
+
+  Schema schema = 1; // The schema defining the type used for the request body.
+}
+
+message SecurityRequirement {
+	string name            = 1; // REQUIRED. The name of the scheme.
+  repeated string scopes = 2; // the scopes for oauth2 or openIdConnect
+}
+
+message SecurityScheme {
+	reserved 7; // Reserved for flows
+
+	enum In {
+	  QUERY  = 0;
+		HEADER = 1;
+		COOKIE = 2;
+	}
+
+  enum Type {
+	  API_KEY        = 0;
+		HTTP           = 1;
+		OAUTH2         = 2;
+		OPENID_CONNECT = 3;
+	}
+
+	Type type                  = 1; // REQUIRED. The type of the security scheme.
+	string description         = 2; // A short description of the scheme.
+	string name                = 3; // REQUIRED (if apiKey). The name of the header, query or cookie parameter to be used.
+	In in                      = 4; // REQUIRED (if apiKey). The location of the API key.
+	string scheme              = 5; // REQUIRED (if http). The name of the HTTP Authorization scheme to be used.
+	string bearer_format       = 6; // A hint to the client to identify how the bearer token is formatted.
+	string open_id_connect_url = 8; // REQUIRED (if openIdConnect). OpenId Connect URL to discover OAuth2 configvalues.
 }

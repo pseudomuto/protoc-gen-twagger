@@ -1,3 +1,3 @@
 package options
 
-//go:generate sh -c "protoc --go_out=. -I. ./*.proto"
+//go:generate retool do protoc --go_out=. -I. annotations.proto
