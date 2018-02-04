@@ -1,4 +1,4 @@
-.PHONY: setup test run swagger
+.PHONY: setup test test-ci run swagger
 
 TEST_DEPS = fixtures/codegen.req options/annotations.pb.go options/swagger.pb.go
 
@@ -34,6 +34,9 @@ options/annotations.pb.go options/swagger.pb.go: options/*.proto
 test: $(TEST_DEPS)
 	@echo Running tests...
 	@go test -race -cover ./internal/...
+
+test-ci: $(TEST_DEPS)
+	@retool do goverage -race -coverprofile=coverage.txt -covermode=atomic ./internal/...
 
 swagger: $(TEST_DEPS) run
 	@docker build -t twagger-test -f Dockerfile.test .

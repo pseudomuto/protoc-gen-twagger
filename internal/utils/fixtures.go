@@ -7,10 +7,12 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"strings"
 )
 
 func LoadCodeGenRequest() (*plugin_go.CodeGeneratorRequest, error) {
-	return LoadCodeGenRequestWithGoPath(os.Getenv("GOPATH"))
+	path := strings.Split(os.Getenv("GOPATH"), ":")
+	return LoadCodeGenRequestWithGoPath(path[0])
 }
 
 func LoadCodeGenRequestWithGoPath(goPath string) (*plugin_go.CodeGeneratorRequest, error) {
