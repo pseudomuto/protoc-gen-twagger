@@ -26,6 +26,8 @@ It has these top-level messages:
 	RequestBody
 	Response
 	MediaType
+	SecurityRequirement
+	SecurityScheme
 */
 package options
 

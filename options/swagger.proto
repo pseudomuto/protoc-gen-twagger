@@ -4,12 +4,11 @@ package com.pseudomuto.protoc_gen_twagger.options;
 option go_package = "options";
 
 message OpenAPI {
-  reserved 3; // reserved for security
-
-  string openapi                      = 1; // REQUIRED. This string MUST be the semantic version of the OpenAPI Specification.
-  Info info                           = 2; // REQUIRED. Provides metadata about the API.
-  repeated Server servers             = 4; // An array of server objects.
-  repeated Tag tags                   = 5; // A list of tags used by the specification with additional metadata.
+  string openapi                        = 1; // REQUIRED. This string MUST be the semantic version of the OpenAPI spec.
+  Info info                             = 2; // REQUIRED. Provides metadata about the API.
+	repeated SecurityRequirement security = 3; // A declaration of which security mechanisms can be used across the API.
+  repeated Server servers               = 4; // An array of server objects.
+  repeated Tag tags                     = 5; // A list of tags used by the specification with additional metadata.
 
   map<string, Path> paths             = 6; // REQUIRED. The available paths and operations for the API.
 	Components components               = 7; // The reusable components for the API.
@@ -90,7 +89,8 @@ message Operation {
 }
 
 message Components {
-  map<string, Schema> schemas = 1; // An object to hold reusable schemas.
+  map<string, Schema> schemas                  = 1; // An object to hold reusable schemas.
+	map<string, SecurityScheme> security_schemes = 2; // An object to hold reusable security schemes.
 }
 
 message Schema {
@@ -137,4 +137,34 @@ message MediaType {
 	reserved 4; // Reserved for encoding
 
   Schema schema = 1; // The schema defining the type used for the request body.
+}
+
+message SecurityRequirement {
+	string name            = 1; // REQUIRED. The name of the scheme.
+  repeated string scopes = 2; // the scopes for oauth2 or openIdConnect
+}
+
+message SecurityScheme {
+	reserved 7; // Reserved for flows
+
+	enum In {
+	  QUERY  = 0;
+		HEADER = 1;
+		COOKIE = 2;
+	}
+
+  enum Type {
+	  API_KEY        = 0;
+		HTTP           = 1;
+		OAUTH2         = 2;
+		OPENID_CONNECT = 3;
+	}
+
+	Type type                  = 1; // REQUIRED. The type of the security scheme.
+	string description         = 2; // A short description of the scheme.
+	string name                = 3; // REQUIRED (if apiKey). The name of the header, query or cookie parameter to be used.
+	In in                      = 4; // REQUIRED (if apiKey). The location of the API key.
+	string scheme              = 5; // REQUIRED (if http). The name of the HTTP Authorization scheme to be used.
+	string bearer_format       = 6; // A hint to the client to identify how the bearer token is formatted.
+	string open_id_connect_url = 8; // REQUIRED (if openIdConnect). OpenId Connect URL to discover OAuth2 configvalues.
 }

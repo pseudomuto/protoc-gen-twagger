@@ -29,8 +29,20 @@ option (com.pseudomuto.protoc_gen_twagger.options.api) = {
 			url: "http://www.apache.org/licenses/LICENSE-2.0.html"
 		};
 	};
+	security: {
+		name: "bearerAuth"
+	};
 	servers: {
 	  url: "http://localhost:8000"
 		description: "The local development server."
+	};
+	components: {
+		security_schemes: {
+		  key: "bearerAuth"
+			value: {
+				type: HTTP
+				scheme: "bearer"
+			};
+		};
 	};
 };

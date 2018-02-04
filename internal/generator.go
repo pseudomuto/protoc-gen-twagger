@@ -73,8 +73,9 @@ func findOpenAPIDoc(files []*parser.File) (*options.OpenAPI, error) {
 		}
 
 		api.Info.Description = file.GetDescription()
-		api.Components = &options.Components{Schemas: make(map[string]*options.Schema)}
+		api.Components.Schemas = make(map[string]*options.Schema)
 		api.Paths = make(map[string]*options.Path)
+
 		return api, nil
 	}
 
