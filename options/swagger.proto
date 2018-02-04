@@ -73,8 +73,6 @@ message Path {
 }
 
 message Operation {
-	reserved 6; // Reserved for parameters
-	reserved 7; // Reserved for requestBody
 	reserved 9; // Reserved for callbacks
 	reserved 11; // Reserved for security
 	reserved 12; // Reserved for servers
@@ -85,6 +83,8 @@ message Operation {
   ExternalDocumentation external_docs = 4; // Additional external documentation for this operation.
 	string operation_id                 = 5; // A unique string to identify the operation.
 
+	repeated Parameter parameters   = 6; // A list of parameters that are applicable for this operation..
+	RequestBody request_body        = 7; // The request body applicable for this operation.
   map<string, Response> responses = 8; // The set of defined responses.
 	bool deprecated                 = 10; // Declares this operation to be deprecated.
 }
@@ -100,6 +100,27 @@ message Schema {
 	repeated string required       = 4; // The set of required fields.
 	string format                  = 5; // The format of this schema ("date-time", "password", etc.).
 	string ref                     = 6; // The reference string.
+}
+
+message Parameter {
+  enum In {
+	  QUERY  = 0;
+		HEADER = 1;
+		PATH   = 2;
+		COOKIE = 3;
+	}
+
+	string name            = 1; // REQUIRED. The name of the parameter.
+	In in                  = 2; // REQUIRED. The location of the parameter.
+	string description     = 3; // A brief description of the parameter.
+	bool required          = 4; // Determines whether or not this parameter is mandatory.
+	bool allow_empty_value = 5; // Sets the ability to pass empty-valued parameters (valid only for query parameters)
+}
+
+message RequestBody {
+  string description             = 1; // A brief description of the request body.
+	map<string, MediaType> content = 2; // REQUIRED. The content of the request body.
+	bool required                  = 3; // Determines if the request body is required in the request.
 }
 
 message Response {

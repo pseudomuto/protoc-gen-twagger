@@ -23,16 +23,27 @@ func ServicesToTags(ctx context.Context, svcs []*parser.Service) []*options.Tag 
 }
 
 func MethodToPath(ctx context.Context, method *parser.ServiceMethod, tag string) *options.Path {
-	path := &options.Path{
+	return &options.Path{
 		Post: &options.Operation{
 			Summary:     summarize(method.GetDescription()),
 			Description: describe(method.GetDescription()),
 			Tags:        []string{tag},
+			RequestBody: &options.RequestBody{
+				Description: "The body for this request",
+				Content: map[string]*options.MediaType{
+					"application/json": {
+						Schema: &options.Schema{
+							Ref: fmt.Sprintf("#/components/schemas/%s", method.GetInputRef().GetTypeName()),
+						},
+					},
+				},
+				Required: true,
+			},
 			Responses: map[string]*options.Response{
 				"200": &options.Response{
 					Description: "The successful response",
 					Content: map[string]*options.MediaType{
-						"application/json": &options.MediaType{
+						"application/json": {
 							Schema: &options.Schema{
 								Ref: fmt.Sprintf("#/components/schemas/%s", method.GetOutputRef().GetTypeName()),
 							},
@@ -42,8 +53,6 @@ func MethodToPath(ctx context.Context, method *parser.ServiceMethod, tag string)
 			},
 		},
 	}
-
-	return path
 }
 
 func summarize(str string) string {

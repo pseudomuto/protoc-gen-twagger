@@ -40,6 +40,7 @@ func (assert *ServicesTest) TestMethodToPath() {
 			Name: proto.String("DoSomething"),
 		},
 		Description: "Summary here\n\nDescription down here",
+		InputRef:    &parser.TypeReference{TypeName: "Some"},
 		OutputRef:   &parser.TypeReference{TypeName: "Thing"},
 	}
 
@@ -48,6 +49,9 @@ func (assert *ServicesTest) TestMethodToPath() {
 	assert.Equal("Description down here", path.GetPost().GetDescription())
 	assert.Equal([]string{"MyService"}, path.GetPost().GetTags())
 	assert.Len(path.GetPost().GetResponses(), 1)
+
+	req := path.GetPost().GetRequestBody()
+	assert.Equal("#/components/schemas/Some", req.GetContent()["application/json"].GetSchema().GetRef())
 
 	resp := path.GetPost().GetResponses()["200"]
 	assert.Equal("#/components/schemas/Thing", resp.GetContent()["application/json"].GetSchema().GetRef())
