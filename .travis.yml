@@ -1,0 +1,18 @@
+language: go
+
+go:
+  - 1.9.x
+  - master
+
+cache:
+  - "${GOPATH}/src/github.com/pseudomuto/protoc-gen-twagger/vendor"
+
+install:
+  - go get github.com/twitchtv/retool
+  - make setup
+
+script:
+  - make test
+
+notifications:
+  email: false
