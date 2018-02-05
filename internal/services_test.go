@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/pseudomuto/protoc-gen-twagger/internal"
-	"github.com/pseudomuto/protoc-gen-twagger/internal/parser"
+	"github.com/pseudomuto/protoc-parser"
 )
 
 type ServicesTest struct {

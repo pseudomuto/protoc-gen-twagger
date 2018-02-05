@@ -6,8 +6,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pseudomuto/protoc-gen-twagger/internal/parser"
 	"github.com/pseudomuto/protoc-gen-twagger/options"
+	"github.com/pseudomuto/protoc-parser"
 )
 
 type Generator struct {

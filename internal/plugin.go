@@ -8,7 +8,7 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/pseudomuto/protoc-gen-twagger/internal/parser"
+	"github.com/pseudomuto/protoc-parser"
 )
 
 type Plugin struct {

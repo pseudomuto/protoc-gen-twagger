@@ -3,8 +3,10 @@
 TEST_DEPS = fixtures/codegen.req options/annotations.pb.go options/swagger.pb.go
 
 setup:
-	retool sync
-	retool do dep ensure
+	$(info Synching dev tools and dependencies...)
+	@if test -z $(which retool); then go get github.com/twitchtv/retool; fi
+	@retool sync
+	@retool do dep ensure
 
 clean:
 	@rm -rf _output protoc-gen-twagger
