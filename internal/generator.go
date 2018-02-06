@@ -51,7 +51,7 @@ func generateFile(ctx context.Context, api *options.OpenAPI, f *parser.File) {
 
 	for _, svc := range f.GetServices() {
 		for _, method := range svc.GetMethods() {
-			api.Paths[method.GetUrl()] = MethodToPath(ctx, method, svc.GetName())
+			api.Paths[fmt.Sprintf("/twirp%s", method.GetUrl())] = MethodToPath(ctx, method, svc.GetName())
 		}
 	}
 
