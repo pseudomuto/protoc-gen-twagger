@@ -33,7 +33,7 @@ func (assert *MessagesTest) TestMessageToSchema() {
 					JsonName: proto.String("intField"),
 					Type:     descriptor.FieldDescriptorProto_TYPE_INT32.Enum(),
 				},
-				Description: "Integer field",
+				Description: "REQUIRED: Integer field",
 			},
 			{
 				FieldDescriptorProto: &descriptor.FieldDescriptorProto{
@@ -61,6 +61,7 @@ func (assert *MessagesTest) TestMessageToSchema() {
 
 	assert.Equal("My message description", schema.GetDescription())
 	assert.Len(schema.Properties, 3)
+	assert.Equal([]string{"intField"}, schema.Required)
 
 	prop := schema.Properties["intField"]
 	assert.Equal("Integer field", prop.Description)

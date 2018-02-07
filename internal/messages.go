@@ -82,11 +82,15 @@ func makeSchema(ctx context.Context, s Schema) *options.Schema {
 	schema := &options.Schema{
 		Type:        format.name,
 		Format:      format.format,
-		Description: s.GetDescription(),
+		Description: strings.TrimSpace(strings.TrimPrefix(s.GetDescription(), "REQUIRED:")),
 		Properties:  make(map[string]*options.Schema),
 	}
 
 	for name, sch := range s.GetProperties() {
+		if strings.HasPrefix(sch.GetDescription(), "REQUIRED:") {
+			schema.Required = append(schema.Required, name)
+		}
+
 		optSchema := makeSchema(ctx, sch)
 		if optSchema.Type == "object" {
 			if sch.GetTypeName() == ".google.protobuf.Timestamp" {

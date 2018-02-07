@@ -1,6 +1,6 @@
 .PHONY: setup test test-ci run swagger
 
-TEST_DEPS = fixtures/codegen.req options/annotations.pb.go options/swagger.pb.go
+TEST_DEPS = fixtures/codegen.req options/annotations.pb.go
 
 setup:
 	$(info Synching dev tools and dependencies...)
@@ -29,7 +29,7 @@ fixtures/codegen.req: fixtures/protos/*.proto
 	@echo Generating fixtures...
 	@cd fixtures && go generate
 
-options/annotations.pb.go options/swagger.pb.go: options/*.proto
+options/annotations.pb.go: options/*.proto
 	@echo Generating options...
 	@cd options && go generate
 
