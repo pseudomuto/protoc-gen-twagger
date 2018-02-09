@@ -9,6 +9,8 @@ Generates [Swagger] docs for your [Twirp] services.
 
 Lots of assumptions being made at the moment...use with caution.
 
+For a demo, clone the repo and run `make setup swagger`. Then open your browser to http://localhost:8080 and browse around.
+
 [Swagger]: https://swagger.io/
 [Twirp]: https://github.com/twitchtv/twirp
 [travis-svg]:
