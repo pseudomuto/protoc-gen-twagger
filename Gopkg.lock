@@ -27,7 +27,7 @@
   branch = "master"
   name = "github.com/pseudomuto/protoc-parser"
   packages = ["."]
-  revision = "cb838cf280dc3b4e621c2cdc6ed133ca748ce503"
+  revision = "9b3c59e769c5132e2b0a57fb14d2327c1b3a348c"
 
 [[projects]]
   name = "github.com/stretchr/testify"

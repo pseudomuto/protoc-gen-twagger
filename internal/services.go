@@ -9,7 +9,8 @@ import (
 	"github.com/pseudomuto/protoc-parser"
 )
 
-func ServicesToTags(ctx context.Context, svcs []*parser.Service) []*options.Tag {
+// ServicesToTags creates swagger Tag objects based on service names and descriptions
+func ServicesToTags(ctx context.Context, svcs []*parser.ServiceDescriptor) []*options.Tag {
 	tags := make([]*options.Tag, len(svcs))
 
 	for i, svc := range svcs {
@@ -22,7 +23,9 @@ func ServicesToTags(ctx context.Context, svcs []*parser.Service) []*options.Tag 
 	return tags
 }
 
-func MethodToPath(ctx context.Context, method *parser.ServiceMethod, tag string) *options.Path {
+// MethodToPath generates a Path object for a service method. Since we're being twirp specific, only the POST method is
+// defined.
+func MethodToPath(ctx context.Context, method *parser.MethodDescriptor, tag string) *options.Path {
 	return &options.Path{
 		Post: &options.Operation{
 			Summary:     summarize(method.GetDescription()),

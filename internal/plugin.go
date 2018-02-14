@@ -43,8 +43,8 @@ func (p *Plugin) Generate() (*plugin_go.CodeGeneratorResponse, error) {
 	return resp, nil
 }
 
-func (p *Plugin) parseFiles() []*parser.File {
-	files := make([]*parser.File, len(p.req.GetProtoFile()))
+func (p *Plugin) parseFiles() []*parser.FileDescriptor {
+	files := make([]*parser.FileDescriptor, len(p.req.GetProtoFile()))
 
 	for i, pf := range p.req.GetProtoFile() {
 		files[i] = parser.ParseFile(pf)

@@ -21,21 +21,21 @@ func TestServices(t *testing.T) {
 }
 
 func (assert *ServicesTest) TestServicesToTags() {
-	service := &parser.Service{
+	service := &parser.ServiceDescriptor{
 		ServiceDescriptorProto: &descriptor.ServiceDescriptorProto{
 			Name: proto.String("MyService"),
 		},
 		Description: "Summary here\n\nDescription here",
 	}
 
-	tags := internal.ServicesToTags(context.Background(), []*parser.Service{service})
+	tags := internal.ServicesToTags(context.Background(), []*parser.ServiceDescriptor{service})
 	assert.Len(tags, 1)
 	assert.Equal("MyService", tags[0].GetName())
 	assert.Equal("Summary here", tags[0].GetDescription())
 }
 
 func (assert *ServicesTest) TestMethodToPath() {
-	method := &parser.ServiceMethod{
+	method := &parser.MethodDescriptor{
 		MethodDescriptorProto: &descriptor.MethodDescriptorProto{
 			Name: proto.String("DoSomething"),
 		},

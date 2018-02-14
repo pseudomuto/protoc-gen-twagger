@@ -21,12 +21,12 @@ func TestMessages(t *testing.T) {
 }
 
 func (assert *MessagesTest) TestMessageToSchema() {
-	message := &parser.Message{
+	message := &parser.Descriptor{
 		DescriptorProto: &descriptor.DescriptorProto{
 			Name: proto.String("MyMessage"),
 		},
 		Description: "My message description",
-		Fields: []*parser.MessageField{
+		Fields: []*parser.FieldDescriptor{
 			{
 				FieldDescriptorProto: &descriptor.FieldDescriptorProto{
 					Name:     proto.String("IntField"),

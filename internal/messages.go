@@ -46,7 +46,7 @@ type Schema interface {
 }
 
 type msgSchema struct {
-	*parser.Message
+	*parser.Descriptor
 }
 
 func (m *msgSchema) GetType() descriptor.FieldDescriptorProto_Type {
@@ -66,14 +66,14 @@ func (m *msgSchema) GetProperties() map[string]Schema {
 }
 
 type fieldSchema struct {
-	*parser.MessageField
+	*parser.FieldDescriptor
 }
 
 func (f *fieldSchema) GetProperties() map[string]Schema {
 	return make(map[string]Schema)
 }
 
-func MessageToSchema(ctx context.Context, m *parser.Message) *options.Schema {
+func MessageToSchema(ctx context.Context, m *parser.Descriptor) *options.Schema {
 	return makeSchema(ctx, &msgSchema{m})
 }
 

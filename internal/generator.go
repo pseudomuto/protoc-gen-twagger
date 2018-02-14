@@ -11,11 +11,11 @@ import (
 )
 
 type Generator struct {
-	files []*parser.File
+	files []*parser.FileDescriptor
 	api   *options.OpenAPI
 }
 
-func NewGenerator(files []*parser.File) *Generator {
+func NewGenerator(files []*parser.FileDescriptor) *Generator {
 	return &Generator{files: files}
 }
 
@@ -46,12 +46,12 @@ func (g *Generator) Generate(ctx context.Context) error {
 	return nil
 }
 
-func generateFile(ctx context.Context, api *options.OpenAPI, f *parser.File) {
+func generateFile(ctx context.Context, api *options.OpenAPI, f *parser.FileDescriptor) {
 	api.Tags = append(api.Tags, ServicesToTags(ctx, f.GetServices())...)
 
 	for _, svc := range f.GetServices() {
 		for _, method := range svc.GetMethods() {
-			api.Paths[fmt.Sprintf("/twirp%s", method.GetUrl())] = MethodToPath(ctx, method, svc.GetName())
+			api.Paths[fmt.Sprintf("/twirp%s", method.GetURL())] = MethodToPath(ctx, method, svc.GetName())
 		}
 	}
 
@@ -60,7 +60,7 @@ func generateFile(ctx context.Context, api *options.OpenAPI, f *parser.File) {
 	}
 }
 
-func findOpenAPIDoc(files []*parser.File) (*options.OpenAPI, error) {
+func findOpenAPIDoc(files []*parser.FileDescriptor) (*options.OpenAPI, error) {
 	for _, file := range files {
 		ext, err := proto.GetExtension(file.GetOptions(), options.E_Api)
 		if err != nil {
