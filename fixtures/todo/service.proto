@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
+import public "import.proto";
 
 package com.pseudomuto.todo.v1;
 option go_package = "todo";
@@ -16,13 +17,6 @@ service Todo {
   //
   // Adds a new item to the specified list.
   rpc AddItem(AddItemRequest) returns (AddItemResponse);
-}
-
-// A list object.
-message List {
-  int64 id                             = 1; // The id of the list.
-  string name                          = 2; // The name of the list.
-	google.protobuf.Timestamp created_at = 3; // The timestamp for creation.
 }
 
 // A request object for creating todo lists.

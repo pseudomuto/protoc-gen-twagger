@@ -61,6 +61,13 @@ func generateFile(ctx context.Context, api *options.OpenAPI, f *protokit.FileDes
 	for _, m := range f.GetMessages() {
 		api.Components.Schemas[m.GetName()] = MessageToSchema(ctx, m)
 	}
+
+	for _, m := range f.GetImports() {
+		desc := m.GetFile().GetMessage(m.GetLongName())
+		if desc != nil {
+			api.Components.Schemas[desc.GetName()] = MessageToSchema(ctx, desc)
+		}
+	}
 }
 
 func findOpenAPIDoc(files []*protokit.FileDescriptor) (*options.OpenAPI, error) {
