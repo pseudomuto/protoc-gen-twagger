@@ -1,6 +1,6 @@
 .PHONY: setup test test-ci run swagger
 
-TEST_DEPS = fixtures/codegen.req options/annotations.pb.go
+TEST_DEPS = fixtures/fileset.pb options/annotations.pb.go
 
 setup:
 	$(info Synching dev tools and dependencies...)
@@ -20,12 +20,11 @@ run: build
 	@mkdir -p _output
 	@retool do protoc \
 		--plugin=protoc-gen-twagger=./protoc-gen-twagger \
-		-I. -I./options \
-		-I=./fixtures/protos \
-		--twagger_out=./_output \
-		./fixtures/protos/doc.proto ./fixtures/protos/greeter/service.proto ./fixtures/protos/todo/service.proto
+		-I. -Ioptions -Ifixtures \
+		--twagger_out=_output \
+		fixtures/doc.proto fixtures/greeter/service.proto fixtures/todo/service.proto
 
-fixtures/codegen.req: fixtures/protos/*.proto
+fixtures/fileset.pb: fixtures/**/*.proto
 	@echo Generating fixtures...
 	@cd fixtures && go generate
 
