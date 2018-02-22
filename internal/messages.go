@@ -50,11 +50,7 @@ type msgSchema struct {
 }
 
 func (m *msgSchema) GetDescription() string {
-	if m.GetComments() != nil {
-		return m.GetComments().String()
-	}
-
-	return ""
+	return m.GetComments().String()
 }
 
 func (m *msgSchema) GetType() descriptor.FieldDescriptorProto_Type {
@@ -82,11 +78,7 @@ func (f *fieldSchema) GetProperties() map[string]Schema {
 }
 
 func (f *fieldSchema) GetDescription() string {
-	if f.GetComments() != nil {
-		return f.GetComments().String()
-	}
-
-	return ""
+	return f.GetComments().String()
 }
 
 func MessageToSchema(ctx context.Context, m *protokit.Descriptor) *options.Schema {

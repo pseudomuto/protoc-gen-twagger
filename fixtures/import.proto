@@ -1,0 +1,14 @@
+// This is a dummy proto. It's really just used to ensure public imports work as expected.
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package com.pseudomuto.todo.v1;
+option go_package = "fixtures";
+
+// A list object. This is used in todo/service.proto.
+message List {
+  int64 id                             = 1; // The id of the list.
+  string name                          = 2; // The name of the list.
+  google.protobuf.Timestamp created_at = 3; // The timestamp for creation.
+}

@@ -24,7 +24,7 @@ run: build
 		--twagger_out=_output \
 		fixtures/doc.proto fixtures/greeter/service.proto fixtures/todo/service.proto
 
-fixtures/fileset.pb: fixtures/**/*.proto
+fixtures/fileset.pb: fixtures/*.proto fixtures/**/*.proto
 	@echo Generating fixtures...
 	@cd fixtures && go generate
 
