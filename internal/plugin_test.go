@@ -21,7 +21,8 @@ func TestPlugin(t *testing.T) {
 
 func (assert *PluginTest) TestGenerate() {
 	req, _ := utils.LoadCodeGenRequest()
-	resp, err := internal.NewPlugin(req).Generate()
+	plugin := &internal.Plugin{}
+	resp, err := plugin.Generate(req)
 	assert.NoError(err)
 	assert.Len(resp.GetFile(), 1)
 
@@ -32,7 +33,8 @@ func (assert *PluginTest) TestGenerate() {
 
 func (assert *PluginTest) TestGeneratedContent() {
 	req, _ := utils.LoadCodeGenRequest()
-	resp, err := internal.NewPlugin(req).Generate()
+	plugin := &internal.Plugin{}
+	resp, err := plugin.Generate(req)
 	assert.NoError(err)
 
 	var api options.OpenAPI
