@@ -3,12 +3,11 @@ package internal
 import (
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoc-gen-go/plugin"
+	"github.com/pseudomuto/protokit"
 
 	"bytes"
 	"context"
 	"encoding/json"
-
-	"github.com/pseudomuto/protoc-parser"
 )
 
 type Plugin struct {
@@ -43,11 +42,11 @@ func (p *Plugin) Generate() (*plugin_go.CodeGeneratorResponse, error) {
 	return resp, nil
 }
 
-func (p *Plugin) parseFiles() []*parser.FileDescriptor {
-	files := make([]*parser.FileDescriptor, len(p.req.GetProtoFile()))
+func (p *Plugin) parseFiles() []*protokit.FileDescriptor {
+	files := make([]*protokit.FileDescriptor, len(p.req.GetProtoFile()))
 
 	for i, pf := range p.req.GetProtoFile() {
-		files[i] = parser.ParseFile(pf)
+		files[i] = protokit.ParseFile(pf)
 	}
 
 	return files

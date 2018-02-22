@@ -2,13 +2,13 @@ package internal
 
 import (
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"github.com/pseudomuto/protokit"
 
 	"context"
 	"fmt"
 	"strings"
 
 	"github.com/pseudomuto/protoc-gen-twagger/options"
-	"github.com/pseudomuto/protoc-parser"
 )
 
 type typeFormat struct {
@@ -46,7 +46,15 @@ type Schema interface {
 }
 
 type msgSchema struct {
-	*parser.Descriptor
+	*protokit.Descriptor
+}
+
+func (m *msgSchema) GetDescription() string {
+	if m.GetComments() != nil {
+		return m.GetComments().String()
+	}
+
+	return ""
 }
 
 func (m *msgSchema) GetType() descriptor.FieldDescriptorProto_Type {
@@ -66,14 +74,22 @@ func (m *msgSchema) GetProperties() map[string]Schema {
 }
 
 type fieldSchema struct {
-	*parser.FieldDescriptor
+	*protokit.FieldDescriptor
 }
 
 func (f *fieldSchema) GetProperties() map[string]Schema {
 	return make(map[string]Schema)
 }
 
-func MessageToSchema(ctx context.Context, m *parser.Descriptor) *options.Schema {
+func (f *fieldSchema) GetDescription() string {
+	if f.GetComments() != nil {
+		return f.GetComments().String()
+	}
+
+	return ""
+}
+
+func MessageToSchema(ctx context.Context, m *protokit.Descriptor) *options.Schema {
 	return makeSchema(ctx, &msgSchema{m})
 }
 

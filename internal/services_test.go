@@ -3,13 +3,13 @@ package internal_test
 import (
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"github.com/pseudomuto/protokit"
 	"github.com/stretchr/testify/suite"
 
 	"context"
 	"testing"
 
 	"github.com/pseudomuto/protoc-gen-twagger/internal"
-	"github.com/pseudomuto/protoc-parser"
 )
 
 type ServicesTest struct {
@@ -21,27 +21,31 @@ func TestServices(t *testing.T) {
 }
 
 func (assert *ServicesTest) TestServicesToTags() {
-	service := &parser.ServiceDescriptor{
+	service := &protokit.ServiceDescriptor{
 		ServiceDescriptorProto: &descriptor.ServiceDescriptorProto{
 			Name: proto.String("MyService"),
 		},
-		Description: "Summary here\n\nDescription here",
+		Comments: &protokit.Comment{
+			Leading: "Summary here\n\nDescription here",
+		},
 	}
 
-	tags := internal.ServicesToTags(context.Background(), []*parser.ServiceDescriptor{service})
+	tags := internal.ServicesToTags(context.Background(), []*protokit.ServiceDescriptor{service})
 	assert.Len(tags, 1)
 	assert.Equal("MyService", tags[0].GetName())
 	assert.Equal("Summary here", tags[0].GetDescription())
 }
 
 func (assert *ServicesTest) TestMethodToPath() {
-	method := &parser.MethodDescriptor{
+	method := &protokit.MethodDescriptor{
 		MethodDescriptorProto: &descriptor.MethodDescriptorProto{
-			Name: proto.String("DoSomething"),
+			Name:       proto.String("DoSomething"),
+			InputType:  proto.String("Some"),
+			OutputType: proto.String("Thing"),
 		},
-		Description: "Summary here\n\nDescription down here",
-		InputRef:    &parser.TypeReference{TypeName: "Some"},
-		OutputRef:   &parser.TypeReference{TypeName: "Thing"},
+		Comments: &protokit.Comment{
+			Leading: "Summary here\n\nDescription down here",
+		},
 	}
 
 	path := internal.MethodToPath(context.Background(), method, "MyService")

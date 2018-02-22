@@ -2,20 +2,20 @@ package internal
 
 import (
 	"github.com/golang/protobuf/proto"
+	"github.com/pseudomuto/protokit"
 
 	"context"
 	"fmt"
 
 	"github.com/pseudomuto/protoc-gen-twagger/options"
-	"github.com/pseudomuto/protoc-parser"
 )
 
 type Generator struct {
-	files []*parser.FileDescriptor
+	files []*protokit.FileDescriptor
 	api   *options.OpenAPI
 }
 
-func NewGenerator(files []*parser.FileDescriptor) *Generator {
+func NewGenerator(files []*protokit.FileDescriptor) *Generator {
 	return &Generator{files: files}
 }
 
@@ -28,30 +28,19 @@ func (g *Generator) Generate(ctx context.Context) error {
 	}
 
 	for _, file := range g.files {
-		// TODO: This is kinda shit. It's used to avoid generating models for any imported proto files. Would love to
-		// only generate messages that are used/referenced in the input protos.
-		ext, err := proto.GetExtension(file.GetOptions(), options.E_Namespace)
-		if err != nil {
-			continue
-		}
-
-		ns, ok := ext.(*string)
-		if !ok {
-			return fmt.Errorf("Unable to parse the twagger namespace for: %v", file.GetName())
-		}
-
-		generateFile(WithNamespace(ctx, *ns), g.api, file)
+		generateFile(ctx, g.api, file)
 	}
 
 	return nil
 }
 
-func generateFile(ctx context.Context, api *options.OpenAPI, f *parser.FileDescriptor) {
+func generateFile(ctx context.Context, api *options.OpenAPI, f *protokit.FileDescriptor) {
 	api.Tags = append(api.Tags, ServicesToTags(ctx, f.GetServices())...)
 
 	for _, svc := range f.GetServices() {
 		for _, method := range svc.GetMethods() {
-			api.Paths[fmt.Sprintf("/twirp%s", method.GetURL())] = MethodToPath(ctx, method, svc.GetName())
+			url := fmt.Sprintf("/twirp/%s/%s", svc.GetFullName(), method.GetName())
+			api.Paths[url] = MethodToPath(ctx, method, svc.GetName())
 		}
 	}
 
@@ -60,7 +49,7 @@ func generateFile(ctx context.Context, api *options.OpenAPI, f *parser.FileDescr
 	}
 }
 
-func findOpenAPIDoc(files []*parser.FileDescriptor) (*options.OpenAPI, error) {
+func findOpenAPIDoc(files []*protokit.FileDescriptor) (*options.OpenAPI, error) {
 	for _, file := range files {
 		ext, err := proto.GetExtension(file.GetOptions(), options.E_Api)
 		if err != nil {
@@ -72,7 +61,7 @@ func findOpenAPIDoc(files []*parser.FileDescriptor) (*options.OpenAPI, error) {
 			return nil, fmt.Errorf("Couldn't convert to OpenAPI object")
 		}
 
-		api.Info.Description = file.GetDescription()
+		api.Info.Description = file.GetComments().String()
 		api.Components.Schemas = make(map[string]*options.Schema)
 		api.Paths = make(map[string]*options.Path)
 
