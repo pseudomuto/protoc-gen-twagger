@@ -1,13 +1,13 @@
 package internal_test
 
 import (
+	"github.com/pseudomuto/protokit/utils"
 	"github.com/stretchr/testify/suite"
 
 	"encoding/json"
 	"testing"
 
 	"github.com/pseudomuto/protoc-gen-twagger/internal"
-	"github.com/pseudomuto/protoc-gen-twagger/internal/utils"
 	"github.com/pseudomuto/protoc-gen-twagger/options"
 )
 
@@ -20,8 +20,13 @@ func TestPlugin(t *testing.T) {
 }
 
 func (assert *PluginTest) TestGenerate() {
-	req, _ := utils.LoadCodeGenRequest()
-	resp, err := internal.NewPlugin(req).Generate()
+	set, err := utils.LoadDescriptorSet("..", "fixtures", "fileset.pb")
+	assert.NoError(err)
+
+	req := utils.CreateGenRequest(set, "doc.proto", "todo/service.proto", "greeter/service.proto")
+	plugin := new(internal.Plugin)
+
+	resp, err := plugin.Generate(req)
 	assert.NoError(err)
 	assert.Len(resp.GetFile(), 1)
 
@@ -30,9 +35,27 @@ func (assert *PluginTest) TestGenerate() {
 	assert.Contains(file.GetContent(), "{\n  \"openapi\": \"3.0\",")
 }
 
+func (assert *PluginTest) TestGenerateNoDocs() {
+	set, err := utils.LoadDescriptorSet("..", "fixtures", "fileset.pb")
+	assert.NoError(err)
+
+	req := utils.CreateGenRequest(set, "todo/service.proto", "greeter/service.proto")
+	plugin := new(internal.Plugin)
+
+	resp, err := plugin.Generate(req)
+	assert.Nil(resp)
+	assert.EqualError(err, "Couldn't find api options in any of the files")
+}
+
 func (assert *PluginTest) TestGeneratedContent() {
-	req, _ := utils.LoadCodeGenRequest()
-	resp, err := internal.NewPlugin(req).Generate()
+	set, err := utils.LoadDescriptorSet("..", "fixtures", "fileset.pb")
+	assert.NoError(err)
+
+	req := utils.CreateGenRequest(set, "doc.proto", "todo/service.proto", "greeter/service.proto")
+	assert.Len(req.FileToGenerate, 3)
+	plugin := new(internal.Plugin)
+
+	resp, err := plugin.Generate(req)
 	assert.NoError(err)
 
 	var api options.OpenAPI

@@ -3,13 +3,13 @@ package internal_test
 import (
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"github.com/pseudomuto/protokit"
 	"github.com/stretchr/testify/suite"
 
 	"context"
 	"testing"
 
 	"github.com/pseudomuto/protoc-gen-twagger/internal"
-	"github.com/pseudomuto/protoc-parser"
 )
 
 type MessagesTest struct {
@@ -21,19 +21,19 @@ func TestMessages(t *testing.T) {
 }
 
 func (assert *MessagesTest) TestMessageToSchema() {
-	message := &parser.Descriptor{
+	message := &protokit.Descriptor{
 		DescriptorProto: &descriptor.DescriptorProto{
 			Name: proto.String("MyMessage"),
 		},
-		Description: "My message description",
-		Fields: []*parser.FieldDescriptor{
+		Comments: &protokit.Comment{Leading: "My message description"},
+		Fields: []*protokit.FieldDescriptor{
 			{
 				FieldDescriptorProto: &descriptor.FieldDescriptorProto{
 					Name:     proto.String("IntField"),
 					JsonName: proto.String("intField"),
 					Type:     descriptor.FieldDescriptorProto_TYPE_INT32.Enum(),
 				},
-				Description: "REQUIRED: Integer field",
+				Comments: &protokit.Comment{Leading: "REQUIRED: Integer field"},
 			},
 			{
 				FieldDescriptorProto: &descriptor.FieldDescriptorProto{
@@ -42,7 +42,7 @@ func (assert *MessagesTest) TestMessageToSchema() {
 					Type:     descriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
 					TypeName: proto.String("OtherSchema"),
 				},
-				Description: "Reference field",
+				Comments: &protokit.Comment{Leading: "Reference field"},
 			},
 			{
 				FieldDescriptorProto: &descriptor.FieldDescriptorProto{
@@ -51,13 +51,12 @@ func (assert *MessagesTest) TestMessageToSchema() {
 					Type:     descriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
 					TypeName: proto.String(".google.protobuf.Timestamp"),
 				},
-				Description: "Timestamp field",
+				Comments: &protokit.Comment{Leading: "Timestamp field"},
 			},
 		},
 	}
 
-	ctx := internal.WithNamespace(context.Background(), "somens")
-	schema := internal.MessageToSchema(ctx, message)
+	schema := internal.MessageToSchema(context.Background(), message)
 
 	assert.Equal("My message description", schema.GetDescription())
 	assert.Len(schema.Properties, 3)

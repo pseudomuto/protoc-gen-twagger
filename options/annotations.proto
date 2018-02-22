@@ -11,12 +11,6 @@ extend google.protobuf.FileOptions {
   // This range is reserved for internal use within individual organizations, so you can use numbers in this range
   // freely for in-house applications
   OpenAPI api = 81098;
-
-  // Chose an arbitrary number in (50000, 99999).
-  //
-  // This range is reserved for internal use within individual organizations, so you can use numbers in this range
-  // freely for in-house applications
-  string namespace = 81099;
 }
 
 message OpenAPI {

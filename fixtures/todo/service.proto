@@ -1,11 +1,9 @@
 syntax = "proto3";
 
-import "options/annotations.proto";
 import "google/protobuf/timestamp.proto";
 
 package com.pseudomuto.todo.v1;
 option go_package = "todo";
-option (com.pseudomuto.protoc_gen_twagger.options.namespace) = "todo";
 
 // A service for managing "todo" items.
 //
