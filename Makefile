@@ -1,6 +1,6 @@
-.PHONY: setup test test-ci run swagger
+.PHONY: setup test test-ci run swagger docker run-docker publish-docker
 
-VERSION = "0.1.0"
+VERSION = "0.1.0-pre"
 
 TEST_DEPS = fixtures/fileset.pb options/annotations.pb.go
 
@@ -21,8 +21,8 @@ run: build
 	@echo Generating swagger.json...
 	@mkdir -p _output
 	@retool do protoc \
-		--plugin=protoc-gen-twagger=./protoc-gen-twagger \
-		-I. -Ioptions -Ifixtures \
+		--plugin=protoc-gen-twagger=protoc-gen-twagger \
+		-I$(GOPATH)/src -Ifixtures \
 		--twagger_out=_output \
 		fixtures/doc.proto fixtures/greeter/service.proto fixtures/todo/service.proto
 
@@ -41,6 +41,17 @@ test: $(TEST_DEPS)
 test-ci: $(TEST_DEPS)
 	@retool do goverage -race -coverprofile=coverage.txt -covermode=atomic ./internal/...
 
+docker: $(TEST_DEPS)
+	@docker build -t pseudomuto/protoc-gen-twagger .
+
+run-docker: docker
+	$(info Running plugin with docker...)
+	@mkdir -p _output/docker
+	@docker run --rm \
+		-v $(shell PWD)/fixtures:/in:ro \
+		-v $(shell PWD)/_output/docker:/out:rw \
+		pseudomuto/protoc-gen-twagger doc.proto greeter/service.proto todo/service.proto
+
 swagger: $(TEST_DEPS) run
 	@docker build -t twagger-test -f Dockerfile.test .
 	@echo running Swagger UI at http://localhost:8080
@@ -52,3 +63,7 @@ release:
 	git commit -m "Bump version to v${VERSION}"
 	git tag -m "Version ${VERSION}" "v${VERSION}"
 	git push && git push --tags
+
+publish-docker:
+	$(info Publishing docker image...)
+	./publish "${VERSION}"

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-import "options/annotations.proto";
+import "github.com/pseudomuto/protoc-gen-twagger/options/annotations.proto";
 
 // # The official documentation for the Todo API.
 //

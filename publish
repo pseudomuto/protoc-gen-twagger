@@ -1,0 +1,49 @@
+#!/bin/bash
+set -euo pipefail
+
+#################################################################################
+# A script to tag and publish the docker container. When run, the image will be
+# tagged with the supplied version, the current git SHA, and `latest`.
+#
+# These will then be pushed to DockerHub using the (encrypted) credentials from
+# the environment
+#
+# Usage: $0 <version>
+#################################################################################
+
+REPO=pseudomuto/protoc-gen-twagger
+
+_tag_image() {
+  docker build -t "${1}" .
+  docker tag "${1}" "${2}:${3}"
+  docker tag "${1}" "${2}:latest"
+}
+
+_push_image() {
+  # credentials are encrypted in travis.yml
+  docker login -u "${DOCKER_HUB_USER}" -p "${DOCKER_HUB_PASSWORD}"
+  docker push "${1}"
+  docker push "${2}:${3}"
+  docker push "${2}:latest"
+}
+
+main() {
+  if [ "$#" -ne 1 ]; then
+    echo "USAGE: $0 <version>"
+    exit 1
+  fi
+
+  local sha="${TRAVIS_COMMIT:-}"
+  if [ -z "${sha}" ]; then sha=$(git rev-parse HEAD); fi
+
+  local version="${1}"
+  local git_tag="${REPO}:${sha}"
+
+  _tag_image "${git_tag}" "${REPO}" "${version}"
+
+  if [ -n "${DOCKER_HUB_USER:-}" ]; then
+    _push_image "${git_tag}" "${REPO}" "${version}"
+  fi
+}
+
+main "$@"

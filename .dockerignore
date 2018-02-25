@@ -1,7 +1,7 @@
 _tools/
-cmd/
 fixtures/
-internal/
-options/
 vendor/
+CHANGELOG.md
+coverage.txt
 protoc-gen-twagger
+README.md

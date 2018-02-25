@@ -5,6 +5,7 @@ env:
     - PROTOC_RELEASE="https://github.com/google/protobuf/releases/download/v3.5.1/protoc-3.5.1-linux-x86_64.zip"
     - PROTOC_TARGET="${HOME}/protoc"
     - PATH="${PROTOC_TARGET}/bin:${PATH}"
+    - secure: pn+X3rw+/WpZevN8Yeent73acprQsIrhbtNYDu1RNr+hUjGcoH77TqqYynn1gJjlAqN1gsZGCxW6kJ5kkUa2/wDCDzTB0h0jIs4wO5RBqdUurjMlB1sR08VF3Z3S6vucanbRX6gcVZMdDOpa63VhGZrmagjq7jJmtojkl6OGlA6G+OqYgSg8eNjz/QYmXE+Z3caET2mSBrv6pmEHYqg1xIe3d3CVmdnVMp3tvzVv9vXcyx8QdioosNboz4EDg45YgC+Ii4qMrjnNdpzahT99RuF5xNVMwMDwbRhyN6t+asswZ76ICHeDiwJkonG7k/Q3tU2IRAv0vt0Ttt3j5zgehay+q3nS3X/W0Y8ZWHWQDD2hKq7DlWinIpiBaqgfPrnpOn49591ypJFAn8DYcMnw82EZQ1tUA69Xa6jmNCJG1Z2V50LWwfQdti4Okc7RzVuHZNadK7D8Vf5gxRDBUBieYWjPP0mi62qDRCvh1kQemZH3QWZUkjwsL8z1e1RUhRxdAOQ3vM6LcPCdj/bVOgEdTOpMjMGEcsS5UgOXsDXarDJuJ2eezf//wqkh9DtLjlpYYmqQCwLZ0Hfi17Y3APXVbCY0RIA12RsGS9OeTHS7GiGDIQq2Mlki94Cf+u9i1WjSxxxSLA3CTukFppPErZQ9hdBBlCGZguyIGWtIjbqp4Vw=
 
 go:
   - 1.10.x
@@ -21,11 +22,15 @@ install:
   - go get github.com/golang/protobuf/{proto,protoc-gen-go}
   - make setup
 
-script:
-  - make test-ci
+script: make test-ci
 
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+after_success: bash <(curl -s https://codecov.io/bash)
+
+deploy:
+  provider: script
+  script: make publish-docker
+  on:
+    tags: true
 
 notifications:
   email: false
