@@ -1,5 +1,7 @@
 .PHONY: setup test test-ci run swagger
 
+VERSION = "0.1.0"
+
 TEST_DEPS = fixtures/fileset.pb options/annotations.pb.go
 
 setup:
@@ -43,3 +45,10 @@ swagger: $(TEST_DEPS) run
 	@docker build -t twagger-test -f Dockerfile.test .
 	@echo running Swagger UI at http://localhost:8080
 	docker run --rm -it -p 8080:8080 twagger-test
+
+release:
+	@echo Releasing v${VERSION}...
+	git add CHANGELOG.md Makefile
+	git commit -m "Bump version to v${VERSION}"
+	git tag -m "Version ${VERSION}" "v${VERSION}"
+	git push && git push --tags

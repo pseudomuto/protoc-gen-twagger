@@ -5,7 +5,7 @@
 [![GoDoc][godoc-svg]][godoc-url]
 [![Go Report Card][goreport-svg]][goreport-url]
 
-Generates [Swagger] docs for your [Twirp] services.
+A protobuf plugin that generates [Swagger] docs for your [Twirp] services.
 
 Lots of assumptions being made at the moment...use with caution.
 
