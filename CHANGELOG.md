@@ -7,4 +7,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased](https://github.com/pseudomuto/protoc-gen-twagger)
 
-The initial release of protoc-gen-twagger.
+The initial alpha release of protoc-gen-twagger.
