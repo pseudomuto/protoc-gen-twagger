@@ -1,6 +1,6 @@
-.PHONY: setup test test-ci run swagger docker run-docker
+.PHONY: setup test test-ci run swagger docker run-docker publish-docker
 
-VERSION = "0.1.0"
+VERSION = "0.1.0-pre"
 
 TEST_DEPS = fixtures/fileset.pb options/annotations.pb.go
 
@@ -63,3 +63,7 @@ release:
 	git commit -m "Bump version to v${VERSION}"
 	git tag -m "Version ${VERSION}" "v${VERSION}"
 	git push && git push --tags
+
+publish-docker:
+	$(info Publishing docker image...)
+	./publish "${VERSION}"
