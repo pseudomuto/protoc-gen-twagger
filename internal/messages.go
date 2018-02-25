@@ -37,12 +37,12 @@ var typeMap = map[descriptor.FieldDescriptorProto_Type]typeFormat{
 	descriptor.FieldDescriptorProto_TYPE_STRING: {"string", ""},
 }
 
-type Schema interface {
+type schema interface {
 	GetName() string
 	GetType() descriptor.FieldDescriptorProto_Type
 	GetTypeName() string
 	GetDescription() string
-	GetProperties() map[string]Schema
+	GetProperties() map[string]schema
 }
 
 type msgSchema struct {
@@ -59,8 +59,8 @@ func (m *msgSchema) GetType() descriptor.FieldDescriptorProto_Type {
 
 func (m *msgSchema) GetTypeName() string { return "object" }
 
-func (m *msgSchema) GetProperties() map[string]Schema {
-	props := make(map[string]Schema)
+func (m *msgSchema) GetProperties() map[string]schema {
+	props := make(map[string]schema)
 
 	for _, f := range m.GetMessageFields() {
 		props[f.GetJsonName()] = &fieldSchema{f}
@@ -73,19 +73,20 @@ type fieldSchema struct {
 	*protokit.FieldDescriptor
 }
 
-func (f *fieldSchema) GetProperties() map[string]Schema {
-	return make(map[string]Schema)
+func (f *fieldSchema) GetProperties() map[string]schema {
+	return make(map[string]schema)
 }
 
 func (f *fieldSchema) GetDescription() string {
 	return f.GetComments().String()
 }
 
+// MessageToSchema converts a descriptor into a schema object for swagger
 func MessageToSchema(ctx context.Context, m *protokit.Descriptor) *options.Schema {
 	return makeSchema(ctx, &msgSchema{m})
 }
 
-func makeSchema(ctx context.Context, s Schema) *options.Schema {
+func makeSchema(ctx context.Context, s schema) *options.Schema {
 	format := typeName(s.GetType())
 	schema := &options.Schema{
 		Type:        format.name,
