@@ -1,4 +1,4 @@
-.PHONY: setup test test-ci run swagger
+.PHONY: setup test test-ci run swagger docker run-docker
 
 VERSION = "0.1.0"
 
@@ -21,8 +21,8 @@ run: build
 	@echo Generating swagger.json...
 	@mkdir -p _output
 	@retool do protoc \
-		--plugin=protoc-gen-twagger=./protoc-gen-twagger \
-		-I. -Ioptions -Ifixtures \
+		--plugin=protoc-gen-twagger=protoc-gen-twagger \
+		-I$(GOPATH)/src -Ifixtures \
 		--twagger_out=_output \
 		fixtures/doc.proto fixtures/greeter/service.proto fixtures/todo/service.proto
 
@@ -40,6 +40,17 @@ test: $(TEST_DEPS)
 
 test-ci: $(TEST_DEPS)
 	@retool do goverage -race -coverprofile=coverage.txt -covermode=atomic ./internal/...
+
+docker: $(TEST_DEPS)
+	@docker build -t pseudomuto/protoc-gen-twagger .
+
+run-docker: docker
+	$(info Running plugin with docker...)
+	@mkdir -p _output/docker
+	@docker run --rm \
+		-v $(shell PWD)/fixtures:/in:ro \
+		-v $(shell PWD)/_output/docker:/out:rw \
+		pseudomuto/protoc-gen-twagger doc.proto greeter/service.proto todo/service.proto
 
 swagger: $(TEST_DEPS) run
 	@docker build -t twagger-test -f Dockerfile.test .
