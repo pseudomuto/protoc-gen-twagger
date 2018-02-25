@@ -44,7 +44,7 @@ func MethodToPath(ctx context.Context, method *protokit.MethodDescriptor, tag st
 				Required: true,
 			},
 			Responses: map[string]*options.Response{
-				"200": &options.Response{
+				"200": {
 					Description: "The successful response",
 					Content: map[string]*options.MediaType{
 						"application/json": {
