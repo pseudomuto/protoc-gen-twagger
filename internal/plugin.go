@@ -16,9 +16,7 @@ import (
 const outputFile = "swagger.json"
 
 // Plugin describes the main entrypoint into this plugin
-type Plugin struct {
-	req *plugin_go.CodeGeneratorRequest
-}
+type Plugin struct{}
 
 // Generate generates a code generator response with a single output file (swagger.json).
 func (p *Plugin) Generate(r *plugin_go.CodeGeneratorRequest) (*plugin_go.CodeGeneratorResponse, error) {
@@ -84,7 +82,7 @@ func findOpenAPIDoc(files []*protokit.FileDescriptor) (*options.OpenAPI, error) 
 			return nil, fmt.Errorf("Couldn't convert to OpenAPI object")
 		}
 
-		api.Info.Description = file.GetComments().String()
+		api.Info.Description = file.GetPackageComments().String()
 		api.Components.Schemas = make(map[string]*options.Schema)
 		api.Paths = make(map[string]*options.Path)
 

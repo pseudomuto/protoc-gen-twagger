@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/pseudomuto/protoc-gen-twagger/internal/utils"
 	"github.com/pseudomuto/protoc-gen-twagger/options"
 )
 
@@ -17,7 +18,7 @@ func ServicesToTags(ctx context.Context, svcs []*protokit.ServiceDescriptor) []*
 	for i, svc := range svcs {
 		tags[i] = &options.Tag{
 			Name:        svc.GetName(),
-			Description: summarize(svc.GetComments().String()),
+			Description: utils.FirstParagraph(svc.GetComments().String()),
 		}
 	}
 
@@ -29,38 +30,32 @@ func ServicesToTags(ctx context.Context, svcs []*protokit.ServiceDescriptor) []*
 func MethodToPath(ctx context.Context, method *protokit.MethodDescriptor, tag string) *options.Path {
 	return &options.Path{
 		Post: &options.Operation{
-			Summary:     summarize(method.GetComments().String()),
+			Summary:     utils.FirstParagraph(method.GetComments().String()),
 			Description: describe(method.GetComments().String()),
 			Tags:        []string{tag},
 			RequestBody: &options.RequestBody{
 				Description: "The body for this request",
-				Content: map[string]*options.MediaType{
-					"application/json": {
-						Schema: &options.Schema{
-							Ref: fmt.Sprintf("#/components/schemas/%s", shortName(method.GetInputType())),
-						},
-					},
-				},
-				Required: true,
+				Content:     contentForRef(method.GetInputType()),
+				Required:    true,
 			},
 			Responses: map[string]*options.Response{
 				"200": {
 					Description: "The successful response",
-					Content: map[string]*options.MediaType{
-						"application/json": {
-							Schema: &options.Schema{
-								Ref: fmt.Sprintf("#/components/schemas/%s", shortName(method.GetOutputType())),
-							},
-						},
-					},
+					Content:     contentForRef(method.GetOutputType()),
 				},
 			},
 		},
 	}
 }
 
-func summarize(str string) string {
-	return strings.SplitN(str, "\n", 2)[0]
+func contentForRef(typeName string) map[string]*options.MediaType {
+	return map[string]*options.MediaType{
+		"application/json": {
+			Schema: &options.Schema{
+				Ref: fmt.Sprintf("#/components/schemas/%s", utils.LastSubstring(typeName, ".")),
+			},
+		},
+	}
 }
 
 func describe(str string) string {

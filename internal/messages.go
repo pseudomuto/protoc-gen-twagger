@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/pseudomuto/protoc-gen-twagger/internal/utils"
 	"github.com/pseudomuto/protoc-gen-twagger/options"
 )
 
@@ -91,7 +92,7 @@ func makeSchema(ctx context.Context, s schema) *options.Schema {
 	schema := &options.Schema{
 		Type:        format.name,
 		Format:      format.format,
-		Description: strings.TrimSpace(strings.TrimPrefix(s.GetDescription(), "REQUIRED:")),
+		Description: utils.Description(s.GetDescription()),
 		Properties:  make(map[string]*options.Schema),
 	}
 
@@ -106,7 +107,7 @@ func makeSchema(ctx context.Context, s schema) *options.Schema {
 				optSchema.Type = "string"
 				optSchema.Format = "date-time"
 			} else {
-				optSchema.Ref = fmt.Sprintf("#/components/schemas/%s", shortName(sch.GetTypeName()))
+				optSchema.Ref = fmt.Sprintf("#/components/schemas/%s", utils.LastSubstring(sch.GetTypeName(), "."))
 			}
 		}
 
@@ -122,9 +123,4 @@ func typeName(typ descriptor.FieldDescriptorProto_Type) typeFormat {
 	}
 
 	return typeFormat{"object", ""}
-}
-
-func shortName(str string) string {
-	parts := strings.Split(str, ".")
-	return parts[len(parts)-1]
 }
